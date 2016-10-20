@@ -33,10 +33,10 @@ public class AzamonState {
     }
 
     public AzamonState(AzamonState a) {
-        this.paqueteEnOferta = a.getpaqueteEnOferta;
-        this.pesoDisponibleOfertas = a.getpesoDisponibleOfertas;
-        this.paquetes = a.getPaquetes;
-        this.transporte = a.getTransporte;
+        this.paqueteEnOferta = a.paqueteEnOferta;
+        this.pesoDisponibleOfertas = a.pesoDisponibleOfertas;
+        this.paquetes = a.paquetes;
+        this.transporte = a.transporte;
     }
 
     public void generateInitialState1(){

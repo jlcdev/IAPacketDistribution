@@ -16,7 +16,7 @@ public class Main {
         System.out.println("Introduce proporcion");
         proporcion = scan.nextDouble();
 
-        AzamonState state = new AzamonState(3, 1, 10.0, 1);
+        AzamonState state = new AzamonState(npaquetes, 1, proporcion, 1);
         System.out.println("\nEstado inicial");
         System.out.println(state.toString());
 
