@@ -32,6 +32,13 @@ public class AzamonState {
         }
     }
 
+    public AzamonState(AzamonState a) {
+        this.paqueteEnOferta = a.getpaqueteEnOferta;
+        this.pesoDisponibleOfertas = a.getpesoDisponibleOfertas;
+        this.paquetes = a.getPaquetes;
+        this.transporte = a.getTransporte;
+    }
+
     public void generateInitialState1(){
         //Añadir paquetes en ofertas hasta llenar capacidad
         //TODO crear generador inicial 1
@@ -135,6 +142,26 @@ public class AzamonState {
         }
         spof += "]";
         return s + "\n" + spaq + "; \n" + spaqof + "; \n" + sof + "; \n" + spof + "}";
+    }
+
+    public int numeroPaquetes () {
+        return paqueteEnOferta.size();
+    }
+
+    public ArrayList<Integer> getPaqueteEnOferta() {
+        return paqueteEnOferta;
+    }
+
+    public ArrayList<Double> getPesoDisponibleOfertas() {
+        return pesoDisponibleOfertas;
+    }
+
+    public Paquetes getPaquetes() {
+        return paquetes;
+    }
+
+    public Transporte getTransporte() {
+        return transporte;
     }
 
     //o.getDias() = {1, 2, 3, 4, 5}
