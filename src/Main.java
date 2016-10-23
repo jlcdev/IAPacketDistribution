@@ -9,19 +9,43 @@ import java.util.*;
  * Created by Javier Lopez on 17/10/16.
  */
 public class Main {
-
+    private static Scanner scan = new Scanner(System.in);
     public static void main(String[] args) {
-        AzamonState azamonState = new AzamonState();
-        //TODO change initial state
-        hillClimbingStrategy(azamonState);
-        simulatedAnnealingStrategy(azamonState);
+        System.out.println("Selecciona el algoritmo a aplicar:");
+        System.out.println("1.-Hill Climbing");
+        System.out.println("2.-Simulated Annealing");
+        System.out.println("3.-Salir");
+        switch(scan.nextInt()){
+            case 1:
+                hillClimbingStrategy();
+                break;
+            case 2:
+                simulatedAnnealingStrategy();
+                break;
+            case 3:
+                scan.close();
+                return;
+            default:
+                main(args);
+        }
     }
 
-    private static void hillClimbingStrategy(AzamonState azamonState){
+    private static void hillClimbingStrategy(){
+        AzamonState azamonState = new AzamonState();
         System.out.println("Azamon - Hill Climbing Selected");
+        System.out.println("Introduce el número de paquetes:");
+        int numPaq = scan.nextInt();
+        System.out.println("Introduce una semilla para generar los paquetes:");
+        int seedPaquetes = scan.nextInt();
+        System.out.println("Introduce una proporción para los transportes:");
+        double proportion = scan.nextDouble();
+        System.out.println("Introduce una semilla para generar los transportes:");
+        int seedOfertas = scan.nextInt();
+        azamonState.generateInitialStateSortPriority(numPaq, seedPaquetes, proportion, seedOfertas);
         try{
             Problem problem = new Problem(azamonState, new AzamonSuccessorFunction(), new AzamonGoalTest(), new AzamonHeuristic());
             HillClimbingSearch hillClimbingSearch = new HillClimbingSearch();
+            System.out.println("Iniciando Hill Climbing");
             SearchAgent searchAgent = new SearchAgent(problem, hillClimbingSearch);
             printAgentActions(searchAgent.getActions());
             printAgentInstrumentation(searchAgent.getInstrumentation());
@@ -30,12 +54,31 @@ public class Main {
         }
     }
 
-    private static void simulatedAnnealingStrategy(AzamonState azamonState){
+    private static void simulatedAnnealingStrategy(){
+        AzamonState azamonState = new AzamonState();
         System.out.println("Azamon - Simulated Annealing selected");
+        System.out.println("Introduce el número de paquetes:");
+        int numPaq = scan.nextInt();
+        System.out.println("Introduce una semilla para generar los paquetes:");
+        int seedPaquetes = scan.nextInt();
+        System.out.println("Introduce una proporción para los transportes:");
+        double proportion = scan.nextDouble();
+        System.out.println("Introduce una semilla para generar los transportes:");
+        int seedOfertas = scan.nextInt();
+        azamonState.generateInitialStateSortPriority(numPaq, seedPaquetes, proportion, seedOfertas);
         try{
-            Problem problem = new Problem(azamonState, new AzamonSuccessorFunction(), new AzamonGoalTest(), new AzamonHeuristic());
-            //TODO change simulated annealing paramateres
-            SimulatedAnnealingSearch simulatedAnnealingSearch = new SimulatedAnnealingSearch(2000, 100, 5, 0.001D);
+            Problem problem = new Problem(azamonState, new AzamonSuccessorFunctionSimulatedAnnealing(), new AzamonGoalTest(), new AzamonHeuristic());
+            System.out.println("--Configurando Simulated Annealing--");
+            System.out.println("Introduce los steps:");
+            int steps = scan.nextInt();
+            System.out.println("Introduce el stiter:");
+            int stiter = scan.nextInt();
+            System.out.println("Introduce el valor K:");
+            int k = scan.nextInt();
+            System.out.println("Introduce el valor lambda:");
+            double lamb = scan.nextDouble();
+            System.out.println("Iniciando Simulated Annealing");
+            SimulatedAnnealingSearch simulatedAnnealingSearch = new SimulatedAnnealingSearch(steps, stiter, k, lamb);
             SearchAgent searchAgent = new SearchAgent(problem, simulatedAnnealingSearch);
             printAgentActions(searchAgent.getActions());
             printAgentInstrumentation(searchAgent.getInstrumentation());
