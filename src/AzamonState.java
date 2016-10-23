@@ -2,10 +2,10 @@ import IA.Azamon.Oferta;
 import IA.Azamon.Paquete;
 import IA.Azamon.Paquetes;
 import IA.Azamon.Transporte;
+import comparators.PaquetePriorityComparator;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 
 /**
  * Created by Javier Lopez on 19/10/16.

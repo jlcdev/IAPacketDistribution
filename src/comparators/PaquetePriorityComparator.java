@@ -1,3 +1,5 @@
+package comparators;
+
 import IA.Azamon.Paquete;
 
 import java.util.Comparator;
