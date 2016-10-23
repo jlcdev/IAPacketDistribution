@@ -1,3 +1,5 @@
+import IA.Azamon.Oferta;
+import IA.Azamon.Paquete;
 import aima.search.framework.HeuristicFunction;
 
 /**
@@ -5,9 +7,16 @@ import aima.search.framework.HeuristicFunction;
  */
 public class AzamonHeuristic implements HeuristicFunction{
     @Override
-    public double getHeuristicValue(Object state) {
-        //TODO create heuristic function
-        AzamonState as = (AzamonState) state;
-        return 0;
+    public double getHeuristicValue(Object state){
+        AzamonState azamonState = (AzamonState) state;
+        double response = 0.0;
+        int dias;
+        for(int i = 0; i < azamonState.getPaqueteEnOferta().size(); ++i){
+            Oferta o = azamonState.getTransporte().get(azamonState.getPaqueteEnOferta().get(i));
+            Paquete p = azamonState.getPaquetes().get(i);
+            dias = (o.getDias() == 1)?0:(o.getDias() > 1 && o.getDias() < 4)?1:2;
+            response += o.getPrecio() + (0.25 * dias * p.getPeso());
+        }
+        return response;
     }
 }
