@@ -23,7 +23,7 @@ public class AzamonState {
         this.pesoDisponibleOfertas = new ArrayList();
         this.paquetes = paquetes;
         this.transporte = transporte;
-        //Deep Clonning al state
+        //Deep Clonning all state
         for(Integer i : paqueteEnOferta){
             this.paqueteEnOferta.add(new Integer(i));
         }
@@ -36,7 +36,10 @@ public class AzamonState {
         this.paquetes = new Paquetes(numPaq, seedPaquetes);
         this.transporte = new Transporte(this.paquetes, proporcion, seedOfertas);
         Collections.sort(this.paquetes, new PaquetePriorityComparator());
-        this.paqueteEnOferta = new ArrayList(this.paquetes.size());
+        this.paqueteEnOferta = new ArrayList();
+        for(int i=0; i < this.paquetes.size(); ++i){
+            this.paqueteEnOferta.add(-1);
+        }
         this.pesoDisponibleOfertas = new ArrayList();
         for(int i = 0; i < this.transporte.size(); ++i){
             this.pesoDisponibleOfertas.add(this.transporte.get(i).getPesomax());
