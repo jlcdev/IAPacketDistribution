@@ -4,6 +4,7 @@ import IA.Azamon.Paquetes;
 import IA.Azamon.Transporte;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
 /**
@@ -17,47 +18,40 @@ public class AzamonState {
 
     public AzamonState(){}
 
-    public AzamonState(int numPaq, int seedPaquetes, double proporcion, int seedOfertas) {
-        paquetes = new Paquetes(numPaq, seedPaquetes);
-        transporte = new Transporte(this.paquetes, proporcion, seedOfertas);
-        paqueteEnOferta = new ArrayList<>();
-        pesoDisponibleOfertas = new ArrayList<>();
-        Iterator<Oferta> it = transporte.iterator();
-        while(it.hasNext()){
-            Oferta o = it.next();
-            pesoDisponibleOfertas.add(o.getPesomax());
+    public AzamonState(ArrayList<Integer> paqueteEnOferta, ArrayList<Double> pesoDisponibleOfertas, Paquetes paquetes, Transporte transporte) {
+        this.paqueteEnOferta = new ArrayList();
+        this.pesoDisponibleOfertas = new ArrayList();
+        this.paquetes = (Paquetes) new ArrayList();
+        this.transporte = (Transporte) new ArrayList();
+
+        for(Integer i : paqueteEnOferta){
+            this.paqueteEnOferta.add(new Integer(i));
         }
-        for(Paquete p: paquetes){
-            paqueteEnOferta.add(-1);
+        for(Double d : pesoDisponibleOfertas){
+            this.pesoDisponibleOfertas.add(new Double(d));
+        }
+        for(Paquete p : paquetes){
+            this.paquetes.add(new Paquete(p.getPeso(), p.getPrioridad()));
+        }
+        for(Oferta o : transporte){
+            this.transporte.add(new Oferta(o.getPesomax(), o.getPrecio(), o.getDias()));
         }
     }
 
-    public AzamonState(AzamonState a) {
-        this.paqueteEnOferta = a.paqueteEnOferta;
-        this.pesoDisponibleOfertas = a.pesoDisponibleOfertas;
-        this.paquetes = a.paquetes;
-        this.transporte = a.transporte;
-    }
-
-    public void generateInitialState1(){
-        //Añadir paquetes en ofertas hasta llenar capacidad
-        //TODO crear generador inicial 1
-    }
-
-    public void generateInitialState2(){
-        //Asignar paquetes a ofertas intentando prio(p) == prio(o)
-        int sizeP = paquetes.size(), sizeO = transporte.size();
-        for(int i = 0; i < sizeP; ++i){
-            for(int j = 0; j < sizeO; ++j){
+    public void generateInitialStateSortPriority(int numPaq, int seedPaquetes, double proporcion, int seedOfertas){
+        this.paquetes = new Paquetes(numPaq, seedPaquetes);
+        this.transporte = new Transporte(this.paquetes, proporcion, seedOfertas);
+        Collections.sort(this.paquetes, new PaquetePriorityComparator());
+        this.paqueteEnOferta = new ArrayList();
+        this.pesoDisponibleOfertas = new ArrayList();
+        for(int i = 0; i < this.transporte.size(); ++i){
+            this.pesoDisponibleOfertas.add(this.transporte.get(i).getPesomax());
+        }
+        for(int i = 0; i < this.paquetes.size() ;++i){
+            for(int j = 0; j < this.transporte.size(); ++j){
                 if(this.ponerPaquete(i, j)) break;
             }
         }
-    }
-
-    public void generateInitialState3(){
-        //Ordenar ofertas x dia y por precio kg y añadir hasta que no quepan en la oferta
-        //Paquetes ordenados por prioridad
-        //TODO crear generador inicial 3
     }
 
     public boolean esMovible(int pi, int oj) {
@@ -106,11 +100,6 @@ public class AzamonState {
 
     }
 
-    public Boolean isGoal(){
-        //TODO Crear la función isGoal
-        return false;
-    }
-
     @Override
     public String toString() {
         String s = "AzamonState{";
@@ -145,24 +134,9 @@ public class AzamonState {
     }
 
     public int numeroPaquetes () {
-        return paqueteEnOferta.size();
+        return this.paqueteEnOferta.size();
     }
-
-    public ArrayList<Integer> getPaqueteEnOferta() {
-        return paqueteEnOferta;
-    }
-
-    public ArrayList<Double> getPesoDisponibleOfertas() {
-        return pesoDisponibleOfertas;
-    }
-
-    public Paquetes getPaquetes() {
-        return paquetes;
-    }
-
-    public Transporte getTransporte() {
-        return transporte;
-    }
+    public int numeroTransportes(){ return this.transporte.size(); }
 
     //o.getDias() = {1, 2, 3, 4, 5}
     //p.getPrioridad() = {0, 1, 2}
@@ -202,5 +176,21 @@ public class AzamonState {
             return true;
         }
         return false;
+    }
+
+    public ArrayList<Integer> getPaqueteEnOferta() {
+        return paqueteEnOferta;
+    }
+
+    public ArrayList<Double> getPesoDisponibleOfertas() {
+        return pesoDisponibleOfertas;
+    }
+
+    public Paquetes getPaquetes() {
+        return paquetes;
+    }
+
+    public Transporte getTransporte() {
+        return transporte;
     }
 }
