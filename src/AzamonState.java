@@ -21,20 +21,14 @@ public class AzamonState {
     public AzamonState(ArrayList<Integer> paqueteEnOferta, ArrayList<Double> pesoDisponibleOfertas, Paquetes paquetes, Transporte transporte) {
         this.paqueteEnOferta = new ArrayList();
         this.pesoDisponibleOfertas = new ArrayList();
-        this.paquetes = (Paquetes) new ArrayList();
-        this.transporte = (Transporte) new ArrayList();
-
+        this.paquetes = paquetes;
+        this.transporte = transporte;
+        //Deep Clonning al state
         for(Integer i : paqueteEnOferta){
             this.paqueteEnOferta.add(new Integer(i));
         }
         for(Double d : pesoDisponibleOfertas){
             this.pesoDisponibleOfertas.add(new Double(d));
-        }
-        for(Paquete p : paquetes){
-            this.paquetes.add(new Paquete(p.getPeso(), p.getPrioridad()));
-        }
-        for(Oferta o : transporte){
-            this.transporte.add(new Oferta(o.getPesomax(), o.getPrecio(), o.getDias()));
         }
     }
 
@@ -42,19 +36,19 @@ public class AzamonState {
         this.paquetes = new Paquetes(numPaq, seedPaquetes);
         this.transporte = new Transporte(this.paquetes, proporcion, seedOfertas);
         Collections.sort(this.paquetes, new PaquetePriorityComparator());
-        this.paqueteEnOferta = new ArrayList();
+        this.paqueteEnOferta = new ArrayList(this.paquetes.size());
         this.pesoDisponibleOfertas = new ArrayList();
         for(int i = 0; i < this.transporte.size(); ++i){
             this.pesoDisponibleOfertas.add(this.transporte.get(i).getPesomax());
         }
-        for(int i = 0; i < this.paquetes.size() ;++i){
+        for(int i = 0; i < this.paquetes.size(); ++i){
             for(int j = 0; j < this.transporte.size(); ++j){
                 if(this.ponerPaquete(i, j)) break;
             }
         }
     }
 
-    public boolean esMovible(int pi, int oj) {
+    public boolean esMovible(int pi, int oj){
         return (pesoDisponibleOfertas.get(oj) - paquetes.get(pi).getPeso()) > 0.0;
     }
 
