@@ -12,6 +12,7 @@ public class Main {
 
     public static void main(String[] args) {
         AzamonState azamonState = new AzamonState();
+        //TODO change initial state
         hillClimbingStrategy(azamonState);
         simulatedAnnealingStrategy(azamonState);
     }
