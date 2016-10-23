@@ -1,12 +1,12 @@
-import aima.search.framework.Successor;
-
 import java.util.ArrayList;
 import java.util.List;
+import aima.search.framework.Successor;
+import aima.search.framework.SuccessorFunction;
 
 /**
- * Created by mycol on 20/10/16.
+ * Created by Javier Lopez on 20/10/16.
  */
-public class AzamonSuccessorFunction implements aima.search.framework.SuccessorFunction{
+public class AzamonSuccessorFunction implements SuccessorFunction{
     public AzamonSuccessorFunction(){}
 
     @Override
