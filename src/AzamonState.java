@@ -45,9 +45,9 @@ public class AzamonState {
             }
         }
     }
-    //TODO revisar la corrección del esMovible
+    
     public boolean esMovible(int pi, int oj){
-        return (pesoDisponibleOfertas[oj] - paquetes.get(pi).getPeso()) > 0.0;
+        return ( ((pesoDisponibleOfertas[oj] - paquetes.get(pi).getPeso()) > 0.0) && (prioridad(pi, oj) >= 0) );
     }
 
     public void moverPaquete(int pi, int oj){
@@ -61,7 +61,6 @@ public class AzamonState {
         pesoDisponibleOfertas[oj] = (pesoLibrej - peso);
     }
 
-    //TODO revisar la corrección del esIntercambiable
     public boolean esIntercambiable(int pi, int pj) {
         double pesoi = paquetes.get(pi).getPeso();
         double pesoj = paquetes.get(pj).getPeso();
@@ -70,9 +69,10 @@ public class AzamonState {
         double pesoLibrei = pesoDisponibleOfertas[ofertai];
         double pesoLibrej = pesoDisponibleOfertas[ofertaj];
 
+        boolean condp = this.prioridad(pi, ofertaj) >= 0 && this.prioridad(pj, ofertaj) >= 0;
         boolean condi = (pesoLibrei + pesoi - pesoj) > 0.0;
         boolean condj = (pesoLibrej + pesoj - pesoi) > 0.0;
-        return condi && condj;
+        return condi && condj && condp;
     }
 
     public void intercambiarPaquete(int pi, int pj){
@@ -129,6 +129,16 @@ public class AzamonState {
         return this.paqueteEnOferta.length;
     }
     public int numeroTransportes(){ return this.transporte.size(); }
+
+    /**
+     * 0 = 0 -1 -2 -3 -4
+     * 1 = 2  1  0 -1 -2
+     * 2 = 4  3  2  1  0
+     */
+    public int calcDiasFelicidad(int pi, int oj) {
+        int prioridad = this.paquetes.get(pi).getPrioridad(), dias = this.transporte.get(oj).getDias();
+        return (1-dias) + (2*prioridad);
+    }
 
     //o.getDias() = {1, 2, 3, 4, 5}
     //p.getPrioridad() = {0, 1, 2}
