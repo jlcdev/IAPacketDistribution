@@ -33,7 +33,6 @@ public class Main {
     }
 
     private static void hillClimbingStrategy(){
-        AzamonState azamonState = new AzamonState();
         System.out.println("Azamon - Hill Climbing Selected");
         System.out.println("Introduce el número de paquetes:");
         int numPaq = scan.nextInt();
@@ -43,6 +42,7 @@ public class Main {
         double proportion = scan.nextDouble();
         System.out.println("Introduce una semilla para generar los transportes:");
         int seedOfertas = scan.nextInt();
+        AzamonState azamonState = new AzamonState();
         azamonState.generateInitialStateSortPriority(numPaq, seedPaquetes, proportion, seedOfertas);
         try{
             Problem problem = new Problem(azamonState, new AzamonSuccessorFunction(), new AzamonGoalTest(), new AzamonHeuristic());
@@ -61,7 +61,6 @@ public class Main {
     }
 
     private static void simulatedAnnealingStrategy(){
-        AzamonState azamonState = new AzamonState();
         System.out.println("Azamon - Simulated Annealing selected");
         System.out.println("Introduce el número de paquetes:");
         int numPaq = scan.nextInt();
@@ -71,6 +70,7 @@ public class Main {
         double proportion = scan.nextDouble();
         System.out.println("Introduce una semilla para generar los transportes:");
         int seedOfertas = scan.nextInt();
+        AzamonState azamonState = new AzamonState();
         azamonState.generateInitialStateSortPriority(numPaq, seedPaquetes, proportion, seedOfertas);
         try{
             Problem problem = new Problem(azamonState, new AzamonSuccessorFunctionSimulatedAnnealing(), new AzamonGoalTest(), new AzamonHeuristic());
@@ -85,9 +85,13 @@ public class Main {
             double lamb = scan.nextDouble();
             System.out.println("Iniciando Simulated Annealing");
             SimulatedAnnealingSearch simulatedAnnealingSearch = new SimulatedAnnealingSearch(steps, stiter, k, lamb);
+            long start = System.currentTimeMillis();
             SearchAgent searchAgent = new SearchAgent(problem, simulatedAnnealingSearch);
+            long end = System.currentTimeMillis();
             printAgentActions(searchAgent.getActions());
             printAgentInstrumentation(searchAgent.getInstrumentation());
+            NumberFormat formatter = new DecimalFormat("#0.00000");
+            System.out.println("Duration time: " + formatter.format((end - start)) + "ms");
         }catch(Exception e){
             System.out.println(e.getMessage());
         }
@@ -102,54 +106,4 @@ public class Main {
     private static void printAgentInstrumentation(Properties properties){
         properties.list(System.out);
     }
-/*
-    public static void main2(String[] args) {
-        int npaquetes;
-        double proporcion;
-        Scanner scan = new Scanner(System.in);
-
-        System.out.println("Introduce numero de paquetes");
-        npaquetes = scan.nextInt();
-        System.out.println("Introduce proporcion");
-        proporcion = scan.nextDouble();
-
-        AzamonState state = new AzamonState(npaquetes, 1, proporcion, 1);
-        System.out.println("\nEstado inicial");
-        System.out.println(state.toString());
-
-        int control = 0;
-        int paquete = 0;
-        int ofertaOPaquete = 0;
-        while(control != -1) {
-            System.out.println("\n Mover = 0; Intercambio = 1; Salir = -1");
-            control = scan.nextInt();
-            switch (control) {
-                case 0:
-                    System.out.println("Paquete");
-                    paquete = scan.nextInt();
-                    System.out.println("Oferta");
-                    ofertaOPaquete = scan.nextInt();
-
-                    if (state.esMovible(paquete, ofertaOPaquete)) state.moverPaquete(paquete, ofertaOPaquete);
-                    else System.out.println("No es possible mover");
-                    System.out.println(state.toString());
-                    break;
-                case 1:
-                    System.out.println("Paquete i");
-                    paquete = scan.nextInt();
-                    System.out.println("Paquete j");
-                    ofertaOPaquete = scan.nextInt();
-
-                    if (state.esIntercambiable(paquete, ofertaOPaquete))
-                        state.intercambiarPaquete(paquete, ofertaOPaquete);
-                    else System.out.println("No es possible intercambiar");
-                    System.out.println(state.toString());
-                    break;
-                case -1:
-                    //Salir
-                    break;
-            }
-        }
-    }
-    */
 }
