@@ -15,7 +15,7 @@ public class AzamonHeuristic implements HeuristicFunction{
             Oferta o = azamonState.getTransporte().get(azamonState.getPaqueteEnOferta().get(i));
             Paquete p = azamonState.getPaquetes().get(i);
             dias = (o.getDias() == 1)?0:(o.getDias() > 1 && o.getDias() < 4)?1:2;
-            response += o.getPrecio() + (0.25 * dias * p.getPeso());
+            response += o.getPrecio()* p.getPeso() + (0.25 * dias * p.getPeso());
         }
         return response;
     }
