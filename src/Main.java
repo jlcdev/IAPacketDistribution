@@ -3,6 +3,8 @@ import aima.search.framework.SearchAgent;
 import aima.search.informed.HillClimbingSearch;
 import aima.search.informed.SimulatedAnnealingSearch;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.*;
 
 /**
@@ -46,9 +48,13 @@ public class Main {
             Problem problem = new Problem(azamonState, new AzamonSuccessorFunction(), new AzamonGoalTest(), new AzamonHeuristic());
             HillClimbingSearch hillClimbingSearch = new HillClimbingSearch();
             System.out.println("Iniciando Hill Climbing");
+            long start = System.currentTimeMillis();
             SearchAgent searchAgent = new SearchAgent(problem, hillClimbingSearch);
+            long end = System.currentTimeMillis();
             printAgentActions(searchAgent.getActions());
             printAgentInstrumentation(searchAgent.getInstrumentation());
+            NumberFormat formatter = new DecimalFormat("#0.00000");
+            System.out.println("Duration time: " + formatter.format((end - start)) + "ms");
         }catch(Exception e){
             System.out.println(e.getMessage());
         }
