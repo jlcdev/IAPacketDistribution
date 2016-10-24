@@ -11,38 +11,33 @@ import java.util.Collections;
  * Created by Javier Lopez on 19/10/16.
  */
 public class AzamonState {
-    private ArrayList<Integer> paqueteEnOferta;
-    private ArrayList<Double> pesoDisponibleOfertas;
+    private int[] paqueteEnOferta;
+    private double[] pesoDisponibleOfertas;
+    //private ArrayList<Integer> paqueteEnOferta;
+    //private ArrayList<Double> pesoDisponibleOfertas;
     private Paquetes paquetes;
     private Transporte transporte;
 
     public AzamonState(){}
 
-    public AzamonState(ArrayList<Integer> paqueteEnOferta, ArrayList<Double> pesoDisponibleOfertas, Paquetes paquetes, Transporte transporte) {
-        this.paqueteEnOferta = new ArrayList();
-        this.pesoDisponibleOfertas = new ArrayList();
+    public AzamonState(final int[] oldPaqueteEnOferta, final double[] oldPesoDisponibleOfertas, final Paquetes paquetes, final Transporte transporte) {
         this.paquetes = paquetes;
         this.transporte = transporte;
-        //Deep Clonning all state
-        for(Integer i : paqueteEnOferta){
-            this.paqueteEnOferta.add(new Integer(i));
-        }
-        for(Double d : pesoDisponibleOfertas){
-            this.pesoDisponibleOfertas.add(new Double(d));
-        }
+        this.paqueteEnOferta = oldPaqueteEnOferta.clone();
+        this.pesoDisponibleOfertas = oldPesoDisponibleOfertas.clone();
     }
 
     public void generateInitialStateSortPriority(int numPaq, int seedPaquetes, double proporcion, int seedOfertas){
         this.paquetes = new Paquetes(numPaq, seedPaquetes);
         this.transporte = new Transporte(this.paquetes, proporcion, seedOfertas);
         Collections.sort(this.paquetes, new PaquetePriorityComparator());
-        this.paqueteEnOferta = new ArrayList();
+        this.paqueteEnOferta = new int[this.paquetes.size()];
+        this.pesoDisponibleOfertas = new double[this.transporte.size()];
         for(int i=0; i < this.paquetes.size(); ++i){
-            this.paqueteEnOferta.add(-1);
+            this.paqueteEnOferta[i] = -1;
         }
-        this.pesoDisponibleOfertas = new ArrayList();
         for(int i = 0; i < this.transporte.size(); ++i){
-            this.pesoDisponibleOfertas.add(this.transporte.get(i).getPesomax());
+            this.pesoDisponibleOfertas[i] = this.transporte.get(i).getPesomax();
         }
         for(int i = 0; i < this.paquetes.size(); ++i){
             for(int j = 0; j < this.transporte.size(); ++j){
@@ -52,28 +47,28 @@ public class AzamonState {
     }
     //TODO revisar la corrección del esMovible
     public boolean esMovible(int pi, int oj){
-        return (pesoDisponibleOfertas.get(oj) - paquetes.get(pi).getPeso()) > 0.0;
+        return (pesoDisponibleOfertas[oj] - paquetes.get(pi).getPeso()) > 0.0;
     }
 
     public void moverPaquete(int pi, int oj){
         double peso = paquetes.get(pi).getPeso();
-        int oi = paqueteEnOferta.get(pi);
-        double pesoLibrei = pesoDisponibleOfertas.get(oi);
-        double pesoLibrej = pesoDisponibleOfertas.get(oj);
+        int oi = paqueteEnOferta[pi];
+        double pesoLibrei = pesoDisponibleOfertas[oi];
+        double pesoLibrej = pesoDisponibleOfertas[oj];
 
-        paqueteEnOferta.set(pi, oj);
-        pesoDisponibleOfertas.set(oi, pesoLibrei + peso);
-        pesoDisponibleOfertas.set(oj, pesoLibrej - peso);
+        paqueteEnOferta[pi] = oj;
+        pesoDisponibleOfertas[oi] = (pesoLibrei + peso);
+        pesoDisponibleOfertas[oj] = (pesoLibrej - peso);
     }
 
     //TODO revisar la corrección del esIntercambiable
     public boolean esIntercambiable(int pi, int pj) {
         double pesoi = paquetes.get(pi).getPeso();
         double pesoj = paquetes.get(pj).getPeso();
-        int ofertai = paqueteEnOferta.get(pi);
-        int ofertaj = paqueteEnOferta.get(pj);
-        double pesoLibrei = pesoDisponibleOfertas.get(ofertai);
-        double pesoLibrej = pesoDisponibleOfertas.get(ofertaj);
+        int ofertai = paqueteEnOferta[pi];
+        int ofertaj = paqueteEnOferta[pj];
+        double pesoLibrei = pesoDisponibleOfertas[ofertai];
+        double pesoLibrej = pesoDisponibleOfertas[ofertaj];
 
         boolean condi = (pesoLibrei + pesoi - pesoj) > 0.0;
         boolean condj = (pesoLibrej + pesoj - pesoi) > 0.0;
@@ -83,19 +78,18 @@ public class AzamonState {
     public void intercambiarPaquete(int pi, int pj){
         double pesoi = paquetes.get(pi).getPeso();
         double pesoj = paquetes.get(pj).getPeso();
-        int ofertai = paqueteEnOferta.get(pi);
-        int ofertaj = paqueteEnOferta.get(pj);
-        double pesoLibrei = pesoDisponibleOfertas.get(ofertai);
-        double pesoLibrej = pesoDisponibleOfertas.get(ofertaj);
+        int ofertai = paqueteEnOferta[pi];
+        int ofertaj = paqueteEnOferta[pj];
+        double pesoLibrei = pesoDisponibleOfertas[ofertai];
+        double pesoLibrej = pesoDisponibleOfertas[ofertaj];
 
         //intercambio de ofertas
-        paqueteEnOferta.set(pj, ofertai);
-        paqueteEnOferta.set(pi, ofertaj);
+        paqueteEnOferta[pj] = ofertai;
+        paqueteEnOferta[pi] = ofertaj;
 
         //actualizacion pesos
-        pesoDisponibleOfertas.set(ofertai, pesoLibrei + pesoi - pesoj);
-        pesoDisponibleOfertas.set(ofertaj, pesoLibrej + pesoj - pesoi);
-
+        pesoDisponibleOfertas[ofertai] = (pesoLibrei + pesoi - pesoj);
+        pesoDisponibleOfertas[ofertaj] = (pesoLibrej + pesoj - pesoi);
     }
 
     @Override
@@ -132,7 +126,7 @@ public class AzamonState {
     }
 
     public int numeroPaquetes () {
-        return this.paqueteEnOferta.size();
+        return this.paqueteEnOferta.length;
     }
     public int numeroTransportes(){ return this.transporte.size(); }
 
@@ -167,20 +161,26 @@ public class AzamonState {
     }
 
     private boolean ponerPaquete(int pi, int oj){
-        double deltaPeso = this.pesoDisponibleOfertas.get(oj) - this.paquetes.get(pi).getPeso();
+        double deltaPeso = this.pesoDisponibleOfertas[oj] - this.paquetes.get(pi).getPeso();
         if(deltaPeso > 0.0 && (this.prioridad(pi, oj) == 0)) {
-            this.paqueteEnOferta.set(pi, oj);
-            this.pesoDisponibleOfertas.set(oj, deltaPeso);
+            this.paqueteEnOferta[pi] = oj;
+            this.pesoDisponibleOfertas[oj] = deltaPeso;
             return true;
         }
         return false;
     }
 
-    public ArrayList<Integer> getPaqueteEnOferta() {
+    public double calcularPrecioPaqueteOferta(int paquete){
+        Oferta o = this.getTransporte().get(this.getPaqueteEnOferta()[paquete]);
+        double pesoPaq = this.getPaquetes().get(paquete).getPeso();
+        return ((o.getPrecio() * pesoPaq) + (0.25 * ((o.getDias() == 1)?0:(o.getDias() > 1 && o.getDias() < 4)?1:2) * pesoPaq));
+    }
+
+    public int[] getPaqueteEnOferta() {
         return paqueteEnOferta;
     }
 
-    public ArrayList<Double> getPesoDisponibleOfertas() {
+    public double[] getPesoDisponibleOfertas() {
         return pesoDisponibleOfertas;
     }
 
