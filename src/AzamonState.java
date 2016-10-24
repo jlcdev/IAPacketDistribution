@@ -50,7 +50,7 @@ public class AzamonState {
             }
         }
     }
-
+    //TODO revisar la corrección del esMovible
     public boolean esMovible(int pi, int oj){
         return (pesoDisponibleOfertas.get(oj) - paquetes.get(pi).getPeso()) > 0.0;
     }
@@ -66,6 +66,7 @@ public class AzamonState {
         pesoDisponibleOfertas.set(oj, pesoLibrej - peso);
     }
 
+    //TODO revisar la corrección del esIntercambiable
     public boolean esIntercambiable(int pi, int pj) {
         double pesoi = paquetes.get(pi).getPeso();
         double pesoj = paquetes.get(pj).getPeso();
