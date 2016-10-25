@@ -68,7 +68,7 @@ public class AzamonState {
         double pesoLibrei = pesoDisponibleOfertas[ofertai];
         double pesoLibrej = pesoDisponibleOfertas[ofertaj];
 
-        boolean condp = this.prioridad(pi, ofertaj) >= 0 && this.prioridad(pj, ofertaj) >= 0;
+        boolean condp = this.prioridad(pi, ofertaj) >= 0 && this.prioridad(pj, ofertai) >= 0;
         boolean condi = (pesoLibrei + pesoi - pesoj) > 0.0;
         boolean condj = (pesoLibrej + pesoj - pesoi) > 0.0;
         return condi && condj && condp;
