@@ -33,6 +33,7 @@ public class AzamonState {
         Collections.sort(this.paquetes, new PaquetePriorityComparator());
         this.paqueteEnOferta = new int[this.paquetes.size()];
         this.pesoDisponibleOfertas = new double[this.transporte.size()];
+        //TODO revision eliminar for
         for(int i=0; i < this.paquetes.size(); ++i){
             this.paqueteEnOferta[i] = -1;
         }
@@ -45,7 +46,7 @@ public class AzamonState {
             }
         }
     }
-    
+
     public boolean esMovible(int pi, int oj){
         return ( ((pesoDisponibleOfertas[oj] - paquetes.get(pi).getPeso()) > 0.0) && (prioridad(pi, oj) >= 0) );
     }
@@ -53,12 +54,10 @@ public class AzamonState {
     public void moverPaquete(int pi, int oj){
         double peso = paquetes.get(pi).getPeso();
         int oi = paqueteEnOferta[pi];
-        double pesoLibrei = pesoDisponibleOfertas[oi];
-        double pesoLibrej = pesoDisponibleOfertas[oj];
 
         paqueteEnOferta[pi] = oj;
-        pesoDisponibleOfertas[oi] = (pesoLibrei + peso);
-        pesoDisponibleOfertas[oj] = (pesoLibrej - peso);
+        pesoDisponibleOfertas[oi] += peso;
+        pesoDisponibleOfertas[oj] -= peso;
     }
 
     public boolean esIntercambiable(int pi, int pj) {
@@ -80,16 +79,14 @@ public class AzamonState {
         double pesoj = paquetes.get(pj).getPeso();
         int ofertai = paqueteEnOferta[pi];
         int ofertaj = paqueteEnOferta[pj];
-        double pesoLibrei = pesoDisponibleOfertas[ofertai];
-        double pesoLibrej = pesoDisponibleOfertas[ofertaj];
 
         //intercambio de ofertas
         paqueteEnOferta[pj] = ofertai;
         paqueteEnOferta[pi] = ofertaj;
 
         //actualizacion pesos
-        pesoDisponibleOfertas[ofertai] = (pesoLibrei + pesoi - pesoj);
-        pesoDisponibleOfertas[ofertaj] = (pesoLibrej + pesoj - pesoi);
+        pesoDisponibleOfertas[ofertai] += (pesoi - pesoj);
+        pesoDisponibleOfertas[ofertaj] -= (pesoi - pesoj);
     }
 
     @Override
@@ -140,34 +137,13 @@ public class AzamonState {
         return (1-dias) + (2*prioridad);
     }
 
-    //o.getDias() = {1, 2, 3, 4, 5}
-    //p.getPrioridad() = {0, 1, 2}
-    //0 = dias(1)
-    //1 = dias(2, 3)
-    //2 = dias(4, 5)
+    //o.getDias() = {1, 2, 3, 4, 5}  p.getPrioridad() = {0, 1, 2}
+    //pr(0) = dias(1)   pr(1) = dias(2, 3)     pr(2) = dias(4, 5)
     private int prioridad(int pi, int oj) {
-        int res, prioridad = this.paquetes.get(pi).getPrioridad(), dias = this.transporte.get(oj).getDias();
-        switch(prioridad)
-        {
-            case 0:
-                if(dias == 1) res = 0;
-                else res = -1;
-                break;
-            case 1:
-                if(dias == 1) res = 1;
-                else if(dias <= 3) res = 0;
-                else res = -1;
-                break;
-            case 2:
-                if(dias == 1) res = 2;
-                else if(dias <= 3) res = 1;
-                else res = 0;
-                break;
-            default:
-                res = -1;
-                break;
-        }
-        return res;
+        int prioridad = this.paquetes.get(pi).getPrioridad(), dias = this.transporte.get(oj).getDias();
+        if (dias == 1) return prioridad;
+        else if(dias <= 3) return prioridad - 1;
+        else return prioridad - 2;
     }
 
     private boolean ponerPaquete(int pi, int oj){
