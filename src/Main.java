@@ -1,3 +1,4 @@
+import aima.search.framework.HeuristicFunction;
 import aima.search.framework.Problem;
 import aima.search.framework.SearchAgent;
 import aima.search.informed.HillClimbingSearch;
@@ -32,6 +33,15 @@ public class Main {
         }
     }
 
+    private static int selectHeuristic(){
+        System.out.println("Selecciona el heurístico a utilizar:");
+        System.out.println("1.- Minimizar coste de transporte y almacenamiento.");
+        System.out.println("2.- Maximizar la felicidad de los clientes.");
+        int response = scan.nextInt();
+        if(response < 1 || response > 2) return selectHeuristic();
+        return response;
+    }
+
     private static void hillClimbingStrategy(){
         System.out.println("Azamon - Hill Climbing Selected");
         System.out.println("Introduce el número de paquetes:");
@@ -45,7 +55,9 @@ public class Main {
         AzamonState azamonState = new AzamonState();
         azamonState.generateInitialStateSortPriority(numPaq, seedPaquetes, proportion, seedOfertas);
         try{
-            Problem problem = new Problem(azamonState, new AzamonSuccessorFunction(), new AzamonGoalTest(), new AzamonHeuristic());
+            int numHeuristic = selectHeuristic();
+            HeuristicFunction heuristicFunction = (numHeuristic == 1)? new AzamonHeuristic(): new AzamonHeuristicHappiness();
+            Problem problem = new Problem(azamonState, new AzamonSuccessorFunction(), new AzamonGoalTest(), heuristicFunction);
             HillClimbingSearch hillClimbingSearch = new HillClimbingSearch();
             System.out.println("Iniciando Hill Climbing");
             long start = System.currentTimeMillis();
@@ -73,7 +85,9 @@ public class Main {
         AzamonState azamonState = new AzamonState();
         azamonState.generateInitialStateSortPriority(numPaq, seedPaquetes, proportion, seedOfertas);
         try{
-            Problem problem = new Problem(azamonState, new AzamonSuccessorFunctionSimulatedAnnealing(), new AzamonGoalTest(), new AzamonHeuristic());
+            int numHeuristic = selectHeuristic();
+            HeuristicFunction heuristicFunction = (numHeuristic == 1)? new AzamonHeuristic(): new AzamonHeuristicHappiness();
+            Problem problem = new Problem(azamonState, new AzamonSuccessorFunctionSimulatedAnnealing(), new AzamonGoalTest(), heuristicFunction);
             System.out.println("--Configurando Simulated Annealing--");
             System.out.println("Introduce los steps:");
             int steps = scan.nextInt();
