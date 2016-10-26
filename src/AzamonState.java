@@ -6,6 +6,7 @@ import comparators.PaquetePriorityComparator;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
 /**
  * Created by Javier Lopez on 19/10/16.
@@ -33,10 +34,6 @@ public class AzamonState {
         Collections.sort(this.paquetes, new PaquetePriorityComparator());
         this.paqueteEnOferta = new int[this.paquetes.size()];
         this.pesoDisponibleOfertas = new double[this.transporte.size()];
-        //TODO revision eliminar for
-        for(int i=0; i < this.paquetes.size(); ++i){
-            this.paqueteEnOferta[i] = -1;
-        }
         for(int i = 0; i < this.transporte.size(); ++i){
             this.pesoDisponibleOfertas[i] = this.transporte.get(i).getPesomax();
         }
@@ -44,6 +41,40 @@ public class AzamonState {
             for(int j = 0; j < this.transporte.size(); ++j){
                 if(this.ponerPaquete(i, j)) break;
             }
+        }
+    }
+
+    //Pone el paquete en el primer sitio valido
+    public void generateInitialState(int numPaq, int seedPaquetes, double proporcion, int seedOfertas){
+        this.paquetes = new Paquetes(numPaq, seedPaquetes);
+        this.transporte = new Transporte(this.paquetes, proporcion, seedOfertas);
+        this.paqueteEnOferta = new int[this.paquetes.size()];
+        this.pesoDisponibleOfertas = new double[this.transporte.size()];
+        for(int i = 0; i < this.transporte.size(); ++i){
+            this.pesoDisponibleOfertas[i] = this.transporte.get(i).getPesomax();
+        }
+        for(int i = 0; i < this.paquetes.size(); ++i){
+            for(int j = 0; j < this.transporte.size(); ++j){
+                if(this.ponerPaquete(i, j)) break;
+            }
+        }
+    }
+
+    //Pone el paquete en un sitio aleatorio valido
+    public void generateInitialStateRandom(int numPaq, int seedPaquetes, double proporcion, int seedOfertas){
+        this.paquetes = new Paquetes(numPaq, seedPaquetes);
+        this.transporte = new Transporte(this.paquetes, proporcion, seedOfertas);
+        this.paqueteEnOferta = new int[this.paquetes.size()];
+        int nOfertas = this.transporte.size();
+        this.pesoDisponibleOfertas = new double[nOfertas];
+        for(int i = 0; i < nOfertas; ++i){
+            this.pesoDisponibleOfertas[i] = this.transporte.get(i).getPesomax();
+        }
+        Random random = new Random();
+        int randOferta;
+        for(int i = 0; i < this.paquetes.size(); ++i){
+            randOferta = random.nextInt(nOfertas);
+            while(! this.ponerPaquete(i, randOferta)) randOferta = random.nextInt(nOfertas);
         }
     }
 
