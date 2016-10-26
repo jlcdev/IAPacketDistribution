@@ -42,6 +42,16 @@ public class Main {
         return response;
     }
 
+    private static int selectInitial(){
+        System.out.println("Selecciona el generador de estado inicial a utilizar:");
+        System.out.println("1.- Generador sequencial.");
+        System.out.println("2.- Generador aleatorio.");
+        System.out.println("3.- Generador ordenado por prioridad.");
+        int response = scan.nextInt();
+        if(response < 1 || response > 3) return selectHeuristic();
+        return response;
+    }
+
     private static void hillClimbingStrategy(){
         System.out.println("Azamon - Hill Climbing Selected");
         System.out.println("Introduce el número de paquetes:");
@@ -53,7 +63,18 @@ public class Main {
         System.out.println("Introduce una semilla para generar los transportes:");
         int seedOfertas = scan.nextInt();
         AzamonState azamonState = new AzamonState();
-        azamonState.generateInitialStateSortPriority(numPaq, seedPaquetes, proportion, seedOfertas);
+        int numGenerator = selectInitial();
+        switch (numGenerator) {
+            case 1:
+                azamonState.generateInitialState(numPaq, seedPaquetes, proportion, seedOfertas);
+                break;
+            case 2:
+                azamonState.generateInitialStateRandom(numPaq, seedPaquetes, proportion, seedOfertas);
+                break;
+            case 3:
+                azamonState.generateInitialStateSortPriority(numPaq, seedPaquetes, proportion, seedOfertas);
+                break;
+        }
         try{
             int numHeuristic = selectHeuristic();
             HeuristicFunction heuristicFunction = (numHeuristic == 1)? new AzamonHeuristic(): new AzamonHeuristicHappiness();
@@ -83,7 +104,18 @@ public class Main {
         System.out.println("Introduce una semilla para generar los transportes:");
         int seedOfertas = scan.nextInt();
         AzamonState azamonState = new AzamonState();
-        azamonState.generateInitialStateSortPriority(numPaq, seedPaquetes, proportion, seedOfertas);
+        int numGenerator = selectInitial();
+        switch (numGenerator) {
+            case 1:
+                azamonState.generateInitialState(numPaq, seedPaquetes, proportion, seedOfertas);
+                break;
+            case 2:
+                azamonState.generateInitialStateRandom(numPaq, seedPaquetes, proportion, seedOfertas);
+                break;
+            case 3:
+                azamonState.generateInitialStateSortPriority(numPaq, seedPaquetes, proportion, seedOfertas);
+                break;
+        }
         try{
             int numHeuristic = selectHeuristic();
             HeuristicFunction heuristicFunction = (numHeuristic == 1)? new AzamonHeuristic(): new AzamonHeuristicHappiness();
