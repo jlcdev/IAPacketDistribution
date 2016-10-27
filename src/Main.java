@@ -49,7 +49,7 @@ public class Main {
         System.out.println("2.- Generador aleatorio.");
         System.out.println("3.- Generador ordenado por prioridad.");
         int response = scan.nextInt();
-        if(response < 1 || response > 3) return selectHeuristic();
+        if(response < 1 || response > 3) return selectInitial();
         return response;
     }
 
