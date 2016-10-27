@@ -49,7 +49,7 @@ public class Initial {
         System.out.println("2.- Generador aleatorio.");
         System.out.println("3.- Generador ordenado por prioridad.");
         int response = scan.nextInt();
-        if(response < 1 || response > 3) return selectHeuristic();
+        if(response < 1 || response > 3) return selectInitial();
         return response;
     }
 
@@ -93,8 +93,10 @@ public class Initial {
         AzamonState azamonState = createState();
         try{
             int numHeuristic = selectHeuristic();
+            numHeuristic = (numHeuristic == 1)?1:2;
+            azamonState.setSelectedHeuristic(numHeuristic);
             HeuristicFunction heuristicFunction = (numHeuristic == 1)? new AzamonHeuristic(): new AzamonHeuristicHappiness();
-            Problem problem = new Problem(azamonState, new AzamonSuccessorFunction(), new AzamonGoalTest(), heuristicFunction);
+            Problem problem = new Problem(azamonState, new AzamonSuccessorFunctionHC(), new AzamonGoalTest(), heuristicFunction);
             HillClimbingSearch hillClimbingSearch = new HillClimbingSearch();
             System.out.println("Iniciando Hill Climbing");
             execute(problem, hillClimbingSearch);
@@ -107,33 +109,46 @@ public class Initial {
         System.out.println("Azamon - Simulated Annealing selected");
         AzamonState azamonState = createState();
         try{
-            int numHeuristic = selectHeuristic();
+            int numHeuristic = (selectHeuristic() == 1)?1:2;
+            azamonState.setSelectedHeuristic(numHeuristic);
             HeuristicFunction heuristicFunction = (numHeuristic == 1)? new AzamonHeuristic(): new AzamonHeuristicHappiness();
-            Problem problem = new Problem(azamonState, new AzamonSuccessorFunctionSimulatedAnnealing(), new AzamonGoalTest(), heuristicFunction);
+            Problem problem = new Problem(azamonState, new AzamonSuccessorFunctionSA(), new AzamonGoalTest(), heuristicFunction);
             System.out.println("--Configurando Simulated Annealing--");
             System.out.println("Introduce los steps:");
-            int steps = scan.nextInt();
+            int maxIterations = scan.nextInt();
             System.out.println("Introduce el stiter:");
             int stiter = scan.nextInt();
             System.out.println("Introduce el valor K:");
             int k = scan.nextInt();
             System.out.println("Introduce el valor lambda:");
             double lamb = scan.nextDouble();
-            SimulatedAnnealingSearch simulatedAnnealingSearch = new SimulatedAnnealingSearch(steps, stiter, k, lamb);
             System.out.println("Iniciando Simulated Annealing");
-            execute(problem, simulatedAnnealingSearch);
+            azamonState.setStiter(stiter);
+            SimulatedAnnealingSearch simulatedAnnealingSearch = new SimulatedAnnealingSearch(maxIterations, stiter, k, lamb);
+            long start = System.currentTimeMillis();
+            SearchAgent searchAgent = new SearchAgent(problem, simulatedAnnealingSearch);
+            long end = System.currentTimeMillis();
+            printAgentInstrumentation(searchAgent.getInstrumentation());
+            NumberFormat formatter = new DecimalFormat("#0.00000");
+            System.out.println("Duration time: " + formatter.format((end - start)) + "ms");
+            System.out.println("Coste Final: " + heuristicFunction.getHeuristicValue(searchAgent.getActions().get(0)));
         }catch(Exception e){
             System.out.println(e.getMessage());
         }
     }
 
     private static void printAgentActions(List actions){
-        for(Object action : actions.toArray()){
-            System.out.println((String)action);
+        if(actions instanceof AzamonState){
+            System.out.println(actions.toString());
+        }else{
+            for(Object action : actions.toArray()){
+                System.out.println((String)action);
+            }
         }
     }
 
     private static void printAgentInstrumentation(Properties properties){
         properties.list(System.out);
     }
+
 }
