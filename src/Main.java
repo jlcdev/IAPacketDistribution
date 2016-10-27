@@ -56,8 +56,10 @@ public class Main {
         azamonState.generateInitialStateSortPriority(numPaq, seedPaquetes, proportion, seedOfertas);
         try{
             int numHeuristic = selectHeuristic();
+            numHeuristic = (numHeuristic == 1)?1:2;
+            azamonState.setSelectedHeuristic(numHeuristic);
             HeuristicFunction heuristicFunction = (numHeuristic == 1)? new AzamonHeuristic(): new AzamonHeuristicHappiness();
-            Problem problem = new Problem(azamonState, new AzamonSuccessorFunction(), new AzamonGoalTest(), heuristicFunction);
+            Problem problem = new Problem(azamonState, new AzamonSuccessorFunctionHC(), new AzamonGoalTest(), heuristicFunction);
             HillClimbingSearch hillClimbingSearch = new HillClimbingSearch();
             System.out.println("Iniciando Hill Climbing");
             long start = System.currentTimeMillis();
@@ -85,12 +87,13 @@ public class Main {
         AzamonState azamonState = new AzamonState();
         azamonState.generateInitialStateSortPriority(numPaq, seedPaquetes, proportion, seedOfertas);
         try{
-            int numHeuristic = selectHeuristic();
+            int numHeuristic = (selectHeuristic() == 1)?1:2;
+            azamonState.setSelectedHeuristic(numHeuristic);
             HeuristicFunction heuristicFunction = (numHeuristic == 1)? new AzamonHeuristic(): new AzamonHeuristicHappiness();
-            Problem problem = new Problem(azamonState, new AzamonSuccessorFunctionSimulatedAnnealing(), new AzamonGoalTest(), heuristicFunction);
+            Problem problem = new Problem(azamonState, new AzamonSuccessorFunctionSA(), new AzamonGoalTest(), heuristicFunction);
             System.out.println("--Configurando Simulated Annealing--");
             System.out.println("Introduce los steps:");
-            int steps = scan.nextInt();
+            int maxIterations = scan.nextInt();
             System.out.println("Introduce el stiter:");
             int stiter = scan.nextInt();
             System.out.println("Introduce el valor K:");
@@ -98,22 +101,27 @@ public class Main {
             System.out.println("Introduce el valor lambda:");
             double lamb = scan.nextDouble();
             System.out.println("Iniciando Simulated Annealing");
-            SimulatedAnnealingSearch simulatedAnnealingSearch = new SimulatedAnnealingSearch(steps, stiter, k, lamb);
+            azamonState.setStiter(stiter);
+            SimulatedAnnealingSearch simulatedAnnealingSearch = new SimulatedAnnealingSearch(maxIterations, stiter, k, lamb);
             long start = System.currentTimeMillis();
             SearchAgent searchAgent = new SearchAgent(problem, simulatedAnnealingSearch);
             long end = System.currentTimeMillis();
-            printAgentActions(searchAgent.getActions());
             printAgentInstrumentation(searchAgent.getInstrumentation());
             NumberFormat formatter = new DecimalFormat("#0.00000");
             System.out.println("Duration time: " + formatter.format((end - start)) + "ms");
+            System.out.println("Coste Final: " + heuristicFunction.getHeuristicValue(searchAgent.getActions().get(0)));
         }catch(Exception e){
             System.out.println(e.getMessage());
         }
     }
 
     private static void printAgentActions(List actions){
-        for(Object action : actions.toArray()){
-            System.out.println((String)action);
+        if(actions instanceof AzamonState){
+            System.out.println(actions.toString());
+        }else{
+            for(Object action : actions.toArray()){
+                System.out.println((String)action);
+            }
         }
     }
 
