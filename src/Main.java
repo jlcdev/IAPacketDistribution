@@ -1,5 +1,6 @@
 import aima.search.framework.HeuristicFunction;
 import aima.search.framework.Problem;
+import aima.search.framework.Search;
 import aima.search.framework.SearchAgent;
 import aima.search.informed.HillClimbingSearch;
 import aima.search.informed.SimulatedAnnealingSearch;
@@ -42,8 +43,17 @@ public class Main {
         return response;
     }
 
-    private static void hillClimbingStrategy(){
-        System.out.println("Azamon - Hill Climbing Selected");
+    private static int selectInitial(){
+        System.out.println("Selecciona el generador de estado inicial a utilizar:");
+        System.out.println("1.- Generador sequencial.");
+        System.out.println("2.- Generador aleatorio.");
+        System.out.println("3.- Generador ordenado por prioridad.");
+        int response = scan.nextInt();
+        if(response < 1 || response > 3) return selectHeuristic();
+        return response;
+    }
+
+    private static AzamonState createState(){
         System.out.println("Introduce el número de paquetes:");
         int numPaq = scan.nextInt();
         System.out.println("Introduce una semilla para generar los paquetes:");
@@ -53,7 +63,34 @@ public class Main {
         System.out.println("Introduce una semilla para generar los transportes:");
         int seedOfertas = scan.nextInt();
         AzamonState azamonState = new AzamonState();
-        azamonState.generateInitialStateSortPriority(numPaq, seedPaquetes, proportion, seedOfertas);
+        int numGenerator = selectInitial();
+        switch (numGenerator) {
+            case 1:
+                azamonState.generateInitialState(numPaq, seedPaquetes, proportion, seedOfertas);
+                break;
+            case 2:
+                azamonState.generateInitialStateRandom(numPaq, seedPaquetes, proportion, seedOfertas);
+                break;
+            case 3:
+                azamonState.generateInitialStateSortPriority(numPaq, seedPaquetes, proportion, seedOfertas);
+                break;
+        }
+        return azamonState;
+    }
+
+    private static void execute(Problem p, Search search) throws Exception {
+        long start = System.currentTimeMillis();
+        SearchAgent searchAgent = new SearchAgent(p, search);
+        long end = System.currentTimeMillis();
+        printAgentActions(searchAgent.getActions());
+        printAgentInstrumentation(searchAgent.getInstrumentation());
+        NumberFormat formatter = new DecimalFormat("#0.00000");
+        System.out.println("Duration time: " + formatter.format((end - start)) + "ms");
+    }
+
+    private static void hillClimbingStrategy(){
+        System.out.println("Azamon - Hill Climbing Selected");
+        AzamonState azamonState = createState();
         try{
             int numHeuristic = selectHeuristic();
             numHeuristic = (numHeuristic == 1)?1:2;
@@ -62,13 +99,7 @@ public class Main {
             Problem problem = new Problem(azamonState, new AzamonSuccessorFunctionHC(), new AzamonGoalTest(), heuristicFunction);
             HillClimbingSearch hillClimbingSearch = new HillClimbingSearch();
             System.out.println("Iniciando Hill Climbing");
-            long start = System.currentTimeMillis();
-            SearchAgent searchAgent = new SearchAgent(problem, hillClimbingSearch);
-            long end = System.currentTimeMillis();
-            printAgentActions(searchAgent.getActions());
-            printAgentInstrumentation(searchAgent.getInstrumentation());
-            NumberFormat formatter = new DecimalFormat("#0.00000");
-            System.out.println("Duration time: " + formatter.format((end - start)) + "ms");
+            execute(problem, hillClimbingSearch);
         }catch(Exception e){
             System.out.println(e.getMessage());
         }
@@ -76,16 +107,7 @@ public class Main {
 
     private static void simulatedAnnealingStrategy(){
         System.out.println("Azamon - Simulated Annealing selected");
-        System.out.println("Introduce el número de paquetes:");
-        int numPaq = scan.nextInt();
-        System.out.println("Introduce una semilla para generar los paquetes:");
-        int seedPaquetes = scan.nextInt();
-        System.out.println("Introduce una proporción para los transportes:");
-        double proportion = scan.nextDouble();
-        System.out.println("Introduce una semilla para generar los transportes:");
-        int seedOfertas = scan.nextInt();
-        AzamonState azamonState = new AzamonState();
-        azamonState.generateInitialStateSortPriority(numPaq, seedPaquetes, proportion, seedOfertas);
+        AzamonState azamonState = createState();
         try{
             int numHeuristic = (selectHeuristic() == 1)?1:2;
             azamonState.setSelectedHeuristic(numHeuristic);
