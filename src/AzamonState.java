@@ -1,33 +1,36 @@
 import IA.Azamon.Oferta;
-import IA.Azamon.Paquete;
 import IA.Azamon.Paquetes;
 import IA.Azamon.Transporte;
 import comparators.PaquetePriorityComparator;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Random;
 
 /**
  * Created by Javier Lopez on 19/10/16.
  */
 public class AzamonState {
+    private static Random random;
     private int[] paqueteEnOferta;
     private double[] pesoDisponibleOfertas;
-    //private ArrayList<Integer> paqueteEnOferta;
-    //private ArrayList<Double> pesoDisponibleOfertas;
     private Paquetes paquetes;
     private Transporte transporte;
+    private int selectedHeuristic;
+    private int stiter;
 
     public AzamonState(){}
 
-    public AzamonState(final int[] oldPaqueteEnOferta, final double[] oldPesoDisponibleOfertas, final Paquetes paquetes, final Transporte transporte) {
-        this.paquetes = paquetes;
-        this.transporte = transporte;
-        this.paqueteEnOferta = oldPaqueteEnOferta.clone();
-        this.pesoDisponibleOfertas = oldPesoDisponibleOfertas.clone();
+    public AzamonState(final AzamonState oldAzamonState){
+        this.paquetes = oldAzamonState.paquetes;
+        this.transporte = oldAzamonState.transporte;
+        this.paqueteEnOferta = oldAzamonState.paqueteEnOferta.clone();
+        this.pesoDisponibleOfertas = oldAzamonState.pesoDisponibleOfertas.clone();
+        this.selectedHeuristic = oldAzamonState.selectedHeuristic;
     }
 
     public void generateInitialStateSortPriority(int numPaq, int seedPaquetes, double proporcion, int seedOfertas){
+        random = new Random((long)(seedPaquetes * seedOfertas));
         this.paquetes = new Paquetes(numPaq, seedPaquetes);
         this.transporte = new Transporte(this.paquetes, proporcion, seedOfertas);
         Collections.sort(this.paquetes, new PaquetePriorityComparator());
@@ -94,35 +97,12 @@ public class AzamonState {
 
     @Override
     public String toString() {
-        String s = "AzamonState{";
-
-        String spaq = "[";
-        for (Paquete p: this.paquetes) {
-            spaq += ("peso(" + p.getPeso() + ") pr(" +p.getPrioridad() + "), ");
-        }
-        spaq += "]";
-
-        String spaqof = "[";
-        for (Integer o: this.paqueteEnOferta)
-        {
-            spaqof += (o.toString() + ", ");
-        }
-        spaqof += "]";
-
-        String sof = "[";
-        for (Oferta of: this.transporte)
-        {
-            sof += ("pmax(" +of.getPesomax() +") dias(" +of.getDias() + "), ");
-        }
-        sof += "]";
-
-        String spof = "[";
-        for (Double peso: this.pesoDisponibleOfertas)
-        {
-            spof += (peso.toString() + ", ");
-        }
-        spof += "]";
-        return s + "\n" + spaq + "; \n" + spaqof + "; \n" + sof + "; \n" + spof + "}";
+        return "AzamonStateEEE{" +
+                "paqueteEnOferta=" + Arrays.toString(paqueteEnOferta) +
+                ", pesoDisponibleOfertas=" + Arrays.toString(pesoDisponibleOfertas) +
+                ", paquetes=" + paquetes +
+                ", transporte=" + transporte +
+                '}';
     }
 
     public int numeroPaquetes () {
@@ -186,6 +166,10 @@ public class AzamonState {
         return ((o.getPrecio() * pesoPaq) + (0.25 * ((o.getDias() == 1)?0:(o.getDias() > 1 && o.getDias() < 4)?1:2) * pesoPaq));
     }
 
+    public void setSelectedHeuristic(int selectedHeuristic) {
+        this.selectedHeuristic = selectedHeuristic;
+    }
+
     public int[] getPaqueteEnOferta() {
         return paqueteEnOferta;
     }
@@ -200,5 +184,21 @@ public class AzamonState {
 
     public Transporte getTransporte() {
         return transporte;
+    }
+
+    public int getSelectedHeuristic() {
+        return selectedHeuristic;
+    }
+
+    public int getStiter() {
+        return stiter;
+    }
+
+    public void setStiter(int stiter) {
+        this.stiter = stiter;
+    }
+
+    public static Random getRandom() {
+        return random;
     }
 }
