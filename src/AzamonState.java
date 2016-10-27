@@ -43,7 +43,7 @@ public class AzamonState {
         }
         for(int i = 0; i < this.paquetes.size(); ++i){
             for(int j = 0; j < this.transporte.size(); ++j){
-                if(this.ponerPaquete(i, j)) break;
+                if(this.ponerPaquete(i, j, true)) break;
             }
         }
     }
@@ -58,7 +58,7 @@ public class AzamonState {
         }
         for(int i = 0; i < this.paquetes.size(); ++i){
             for(int j = 0; j < this.transporte.size(); ++j){
-                if(this.ponerPaquete(i, j)) break;
+                if(this.ponerPaquete(i, j, true)) break;
             }
         }
     }
@@ -76,7 +76,7 @@ public class AzamonState {
         int randOferta;
         for(int i = 0; i < this.paquetes.size(); ++i){
             randOferta = random.nextInt(nOfertas);
-            while(! this.ponerPaquete(i, randOferta)) randOferta = random.nextInt(nOfertas);
+            while(! this.ponerPaquete(i, randOferta, true)) randOferta = random.nextInt(nOfertas);
         }
     }
 
@@ -128,10 +128,12 @@ public class AzamonState {
         pesoDisponibleOfertas[ofertaj] -= (pesoi - pesoj);
     }
 
-    private boolean ponerPaquete(int pi, int oj){
+    //Si estricto = true solo permitimos prio == envio, sino permitimos prio <= envio
+    private boolean ponerPaquete(int pi, int oj, boolean estricto){
         double deltaPeso = this.pesoDisponibleOfertas[oj] - this.paquetes.get(pi).getPeso();
         int prioridad = calcDiasFelicidad(pi, oj);
-        if(deltaPeso > 0.0 && (prioridad >= 0 && prioridad <= 1)) {
+        boolean control = (estricto)?(prioridad >= 0 && prioridad <= 1):(prioridad >= 0);
+        if(deltaPeso > 0.0 && control) {
             this.paqueteEnOferta[pi] = oj;
             this.pesoDisponibleOfertas[oj] = deltaPeso;
             return true;
