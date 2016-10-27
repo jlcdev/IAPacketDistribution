@@ -184,4 +184,13 @@ public class AzamonState {
 
         return s + "\n" + spaq + "; \n" + spaqof + "; \n" + sof + "; \n" + spof + "}";
     }
+
+    public double coste() {
+        double response = 0.0;
+        int numPaq = this.getPaqueteEnOferta().length;
+        for(int i = 0; i < numPaq; ++i){
+            response += this.calcularPrecioPaqueteOferta(i);
+        }
+        return response;
+    }
 }
