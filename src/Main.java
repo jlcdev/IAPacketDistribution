@@ -1,5 +1,6 @@
 import aima.search.framework.HeuristicFunction;
 import aima.search.framework.Problem;
+import aima.search.framework.Search;
 import aima.search.framework.SearchAgent;
 import aima.search.informed.HillClimbingSearch;
 import aima.search.informed.SimulatedAnnealingSearch;
@@ -52,8 +53,7 @@ public class Main {
         return response;
     }
 
-    private static void hillClimbingStrategy(){
-        System.out.println("Azamon - Hill Climbing Selected");
+    private static AzamonState createState(){
         System.out.println("Introduce el número de paquetes:");
         int numPaq = scan.nextInt();
         System.out.println("Introduce una semilla para generar los paquetes:");
@@ -75,19 +75,29 @@ public class Main {
                 azamonState.generateInitialStateSortPriority(numPaq, seedPaquetes, proportion, seedOfertas);
                 break;
         }
+        return azamonState;
+    }
+
+    private static void execute(Problem p, Search search) throws Exception {
+        long start = System.currentTimeMillis();
+        SearchAgent searchAgent = new SearchAgent(p, search);
+        long end = System.currentTimeMillis();
+        printAgentActions(searchAgent.getActions());
+        printAgentInstrumentation(searchAgent.getInstrumentation());
+        NumberFormat formatter = new DecimalFormat("#0.00000");
+        System.out.println("Duration time: " + formatter.format((end - start)) + "ms");
+    }
+
+    private static void hillClimbingStrategy(){
+        System.out.println("Azamon - Hill Climbing Selected");
+        AzamonState azamonState = createState();
         try{
             int numHeuristic = selectHeuristic();
             HeuristicFunction heuristicFunction = (numHeuristic == 1)? new AzamonHeuristic(): new AzamonHeuristicHappiness();
             Problem problem = new Problem(azamonState, new AzamonSuccessorFunction(), new AzamonGoalTest(), heuristicFunction);
             HillClimbingSearch hillClimbingSearch = new HillClimbingSearch();
             System.out.println("Iniciando Hill Climbing");
-            long start = System.currentTimeMillis();
-            SearchAgent searchAgent = new SearchAgent(problem, hillClimbingSearch);
-            long end = System.currentTimeMillis();
-            printAgentActions(searchAgent.getActions());
-            printAgentInstrumentation(searchAgent.getInstrumentation());
-            NumberFormat formatter = new DecimalFormat("#0.00000");
-            System.out.println("Duration time: " + formatter.format((end - start)) + "ms");
+            execute(problem, hillClimbingSearch);
         }catch(Exception e){
             System.out.println(e.getMessage());
         }
@@ -95,27 +105,7 @@ public class Main {
 
     private static void simulatedAnnealingStrategy(){
         System.out.println("Azamon - Simulated Annealing selected");
-        System.out.println("Introduce el número de paquetes:");
-        int numPaq = scan.nextInt();
-        System.out.println("Introduce una semilla para generar los paquetes:");
-        int seedPaquetes = scan.nextInt();
-        System.out.println("Introduce una proporción para los transportes:");
-        double proportion = scan.nextDouble();
-        System.out.println("Introduce una semilla para generar los transportes:");
-        int seedOfertas = scan.nextInt();
-        AzamonState azamonState = new AzamonState();
-        int numGenerator = selectInitial();
-        switch (numGenerator) {
-            case 1:
-                azamonState.generateInitialState(numPaq, seedPaquetes, proportion, seedOfertas);
-                break;
-            case 2:
-                azamonState.generateInitialStateRandom(numPaq, seedPaquetes, proportion, seedOfertas);
-                break;
-            case 3:
-                azamonState.generateInitialStateSortPriority(numPaq, seedPaquetes, proportion, seedOfertas);
-                break;
-        }
+        AzamonState azamonState = createState();
         try{
             int numHeuristic = selectHeuristic();
             HeuristicFunction heuristicFunction = (numHeuristic == 1)? new AzamonHeuristic(): new AzamonHeuristicHappiness();
@@ -129,15 +119,9 @@ public class Main {
             int k = scan.nextInt();
             System.out.println("Introduce el valor lambda:");
             double lamb = scan.nextDouble();
-            System.out.println("Iniciando Simulated Annealing");
             SimulatedAnnealingSearch simulatedAnnealingSearch = new SimulatedAnnealingSearch(steps, stiter, k, lamb);
-            long start = System.currentTimeMillis();
-            SearchAgent searchAgent = new SearchAgent(problem, simulatedAnnealingSearch);
-            long end = System.currentTimeMillis();
-            printAgentActions(searchAgent.getActions());
-            printAgentInstrumentation(searchAgent.getInstrumentation());
-            NumberFormat formatter = new DecimalFormat("#0.00000");
-            System.out.println("Duration time: " + formatter.format((end - start)) + "ms");
+            System.out.println("Iniciando Simulated Annealing");
+            execute(problem, simulatedAnnealingSearch);
         }catch(Exception e){
             System.out.println(e.getMessage());
         }
