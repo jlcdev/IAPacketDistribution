@@ -46,8 +46,24 @@ public class Experiment {
 
     private static void exp3() {
         System.out.println("Experimento 3: Determinar mejores parametros para Simulated Annealing");
-        for(int i = 0; i < 100000000; i++) {
-            experimentoSA(1, 100, 1.2, i, 0.001, 1000, 50);
+        int startIterMax = 1;
+        int endIterMax = 100000000;
+        int startItStep = 1;
+        int endItStep = 1000;
+        int startK = 1;
+        int endK = 50;
+        double startLamb = 0.0000000001;
+        double endLamb = 0.1;
+
+        //Ya nos podemos pegar un tiro con esto
+        for(int i = startIterMax; i < endIterMax; i++) {
+            for (int j = startItStep; j < endItStep; j++) {
+                for (int k = startK; k < endK; k++) {
+                    for (double l = startLamb; l < endLamb; l += startLamb){
+                        experimentoSA(3, 100, 1.2, i, l, j, k);
+                    }
+                }
+            }
         }
     }
 
@@ -90,7 +106,7 @@ public class Experiment {
         for(int i = 0; i < nrounds; i++) {
             simulatedAnnealingStrategy(inicial, nPaq, prop, maxIt, lamb, stiter, k);
         }
-        System.out.println("C.Ini.: " +(sumaCosteInicial/nrounds) +" C.Fin.: " +(sumaCosteFinal/nrounds) +" Time: " +(sumaTime/nrounds) +" Pasos: " +(sumaPasos/nrounds));
+        //System.out.println("C.Ini.: " +(sumaCosteInicial/nrounds) +" C.Fin.: " +(sumaCosteFinal/nrounds) +" Time: " +(sumaTime/nrounds) +" Pasos: " +(sumaPasos/nrounds));
     }
 
     private static AzamonState selectgenerator(int i, int nPaq, double prop) {
