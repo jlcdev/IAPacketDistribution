@@ -1,11 +1,10 @@
 import IA.Azamon.Oferta;
+import IA.Azamon.Paquete;
 import IA.Azamon.Paquetes;
 import IA.Azamon.Transporte;
 import comparators.PaquetePriorityComparator;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by Javier Lopez on 19/10/16.
@@ -61,6 +60,62 @@ public class AzamonState {
         }
     }
 
+    public void generatorB(final int numPaq, final int seedPaquetes, final double proporcion, final int seedOfertas){
+        random = new Random((long)(seedPaquetes * seedOfertas));
+        this.paquetes = new Paquetes(numPaq, seedPaquetes);
+        this.transporte = new Transporte(this.paquetes, proporcion, seedOfertas);
+        int transSize = this.transporte.size();
+        this.pesoDisponibleOfertas = new double[transSize];
+        for(int i = 0; i < this.transporte.size(); ++i){
+            this.pesoDisponibleOfertas[i] = this.transporte.get(i).getPesomax();
+        }
+        this.paqueteEnOferta = new int[this.paquetes.size()];
+        int pSelected = 0, numIterMax = numPaq * numPaq, iter = 0;
+        List<Boolean> assigned = new ArrayList<>();
+        while(assigned.contains(false) && pSelected < numPaq && iter < numIterMax){
+            if(!assigned.get(pSelected)){
+                int o = random.nextInt(transSize);
+                if(this.ponerPaquete(pSelected, o, false)){
+                    assigned.set(pSelected, true);
+                    ++pSelected;
+                    iter = 0;
+                }
+            }else{
+                ++pSelected;
+            }
+            ++iter;
+        }
+        //check conditions
+        if(assigned.contains(false) && checkGeneratedSolution()){
+            this.transporte = null;
+            this.paquetes = null;
+            assigned = null;
+            System.out.println("Generation failed, generation next round.");
+            generatorB(numPaq, seedPaquetes, proporcion, seedOfertas);
+            return;
+        }else{
+            System.out.println("Generation successfully");
+        }
+    }
+    //solo verificar el caso de que la prioridad sea superior
+    private boolean checkGeneratedSolution(){
+        for(int i = this.paqueteEnOferta.length; i >= 0; --i){
+            Paquete p = paquetes.get(i);
+            Oferta o = transporte.get(this.paqueteEnOferta[i]);
+            switch(p.getPrioridad()){
+                case 0:
+                    if(o.getDias() > 1) return true;
+                    break;
+                case 1:
+                    if(o.getDias() < 2 && o.getDias() > 3) return true;
+                    break;
+                case 2:
+                    if(o.getDias() < 4) return true;
+                    break;
+            }
+        }
+        return false;
+    }
 
     //Funciones generadoras
 
