@@ -29,6 +29,39 @@ public class AzamonState {
         this.selectedHeuristic = oldAzamonState.selectedHeuristic;
     }
 
+    // NEW GENERATOR FUNCTIONS
+    public void generatorA(int numPaq, int seedPaquetes, double proporcion, int seedOfertas){
+        random = new Random((long)(seedPaquetes * seedOfertas));
+        this.paquetes = new Paquetes(numPaq, seedPaquetes);
+        this.transporte = new Transporte(this.paquetes, proporcion, seedOfertas);
+        Collections.sort(this.paquetes, new PaquetePriorityComparator());
+        this.paqueteEnOferta = new int[this.paquetes.size()];
+        this.pesoDisponibleOfertas = new double[this.transporte.size()];
+        boolean[] assigned = new boolean[this.paquetes.size()];
+        Arrays.fill(assigned, false);
+        for(int i = 0; i < this.transporte.size(); ++i){
+            this.pesoDisponibleOfertas[i] = this.transporte.get(i).getPesomax();
+        }
+        int nPaq = this.paquetes.size(), nTrans = this.transporte.size();
+        // prio == envio
+        for(int i = 0; i < nPaq; ++i){
+            for(int j = 0; j < nTrans; ++j){
+                if(this.ponerPaquete(i, j, true)){
+                    assigned[i] = true;
+                    break;
+                }
+            }
+        }
+        // assign prio <= envio to unassigned paq.
+        for(int i = nPaq -1; i >= 0; --i){
+            if(assigned[i]) continue;
+            for(int j = nTrans -1; j >= 0; --j){
+                if(this.ponerPaquete(i, j, false)) break;
+            }
+        }
+    }
+
+
     //Funciones generadoras
 
     public void generateInitialStateSortPriority(int numPaq, int seedPaquetes, double proporcion, int seedOfertas){
@@ -49,6 +82,7 @@ public class AzamonState {
     }
     //Pone el paquete en el primer sitio valido
     public void generateInitialState(int numPaq, int seedPaquetes, double proporcion, int seedOfertas){
+        random = new Random((long)(seedPaquetes * seedOfertas));
         this.paquetes = new Paquetes(numPaq, seedPaquetes);
         this.transporte = new Transporte(this.paquetes, proporcion, seedOfertas);
         this.paqueteEnOferta = new int[this.paquetes.size()];
@@ -64,6 +98,7 @@ public class AzamonState {
     }
     //Pone el paquete en un sitio aleatorio valido
     public void generateInitialStateRandom(int numPaq, int seedPaquetes, double proporcion, int seedOfertas){
+        random = new Random((long)(seedPaquetes * seedOfertas));
         this.paquetes = new Paquetes(numPaq, seedPaquetes);
         this.transporte = new Transporte(this.paquetes, proporcion, seedOfertas);
         this.paqueteEnOferta = new int[this.paquetes.size()];
@@ -72,7 +107,6 @@ public class AzamonState {
         for(int i = 0; i < nOfertas; ++i){
             this.pesoDisponibleOfertas[i] = this.transporte.get(i).getPesomax();
         }
-        Random random = new Random();
         int randOferta;
         for(int i = 0; i < this.paquetes.size(); ++i){
             randOferta = random.nextInt(nOfertas);
