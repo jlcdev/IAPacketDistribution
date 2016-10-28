@@ -3,6 +3,8 @@ import aima.search.framework.SearchAgent;
 import aima.search.informed.HillClimbingSearch;
 import aima.search.informed.SimulatedAnnealingSearch;
 
+import java.text.DecimalFormat;
+
 /**
  * Created by albert campano on 27/10/2016.
  */
@@ -18,16 +20,20 @@ public class Experiment {
 
     public static void initial(String[] args) {
         /*exp1();
-        System.out.println("\n----------------------------------------------------------------------\n");
+        System.out.println("\n----------------------------------------------------------------------\n");*/
+        for (int i = 0; i < 10; i++) {
+            exp2();
+            System.out.println("\n----------------------------------------------------------------------\n");
+        }
         exp2();
         System.out.println("\n----------------------------------------------------------------------\n");
-        */exp3();
-        /*System.out.println("\n----------------------------------------------------------------------\n");
+        /*exp3();
+        System.out.println("\n----------------------------------------------------------------------\n");
         exp4A();
         System.out.println("\n----------------------------------------------------------------------\n");
         exp4B();
-        System.out.println("\n----------------------------------------------------------------------\n");
-*/
+        System.out.println("\n----------------------------------------------------------------------\n");*/
+
     }
 
     private static void exp1(){
@@ -38,7 +44,7 @@ public class Experiment {
 
     private static void exp2() {
         System.out.println("Experimento 2: Determinar estrategia de generación de solucion inicial");
-        for(int i = 1; i <= 3; i++){
+        for(int i = 1; i <= 5; i++){
             System.out.print("Generador " +i +"  ");
             experimentoHC(i, 100, 1.2);
         }
@@ -70,8 +76,9 @@ public class Experiment {
     private static void exp4A() {
         System.out.println("Experimento 4.a: Hallar la tendencia al incrementar  la proporción");
         double proporcion = 1.2;
+        DecimalFormat df = new DecimalFormat("#.##");
         for(int i = 1; i < iter; i++){
-            System.out.print("Proporcion: " +proporcion +"   ");
+            System.out.print("Proporcion: " +df.format(proporcion) +"  ");
             experimentoHC(1, 100, proporcion);
             proporcion += 0.2;
         }
@@ -81,7 +88,7 @@ public class Experiment {
         System.out.println("Experimento 4.b: Hallar la tendencia al incrementar el numero de paquetes");
         int paq = 100;
         for(int i = 1; i < iter; i++){
-            System.out.print("Paquetes: " +paq  +"   ");
+            System.out.print("Paquetes: " +paq  +"  ");
             experimentoHC(1, paq, 1.2);
             paq += 50;
         }
@@ -95,7 +102,12 @@ public class Experiment {
         for(int i = 0; i < nrounds; i++) {
             hillClimbingStrategy(inicial, nPaq, prop);
         }
-        System.out.println("C.Ini.: " +(sumaCosteInicial/nrounds) +" C.Fin.: " +(sumaCosteFinal/nrounds) +" Time: " +(sumaTime/nrounds) +" Pasos: " +(sumaPasos/nrounds));
+        double mediaCI = sumaCosteInicial/nrounds;
+        double mediaCF = sumaCosteFinal/nrounds;
+        long mediaT = sumaTime/nrounds;
+        int mediaP = sumaPasos/nrounds;
+        DecimalFormat df = new DecimalFormat("#.##");
+        System.out.println("C.Ini.: " +(df.format(mediaCI)) +" C.Fin.: " +(df.format(mediaCF)) +" Time: " +(mediaT) +" Pasos: " +(mediaP));
     }
 
     private static void experimentoSA(int inicial, int nPaq, double prop, int maxIt, double lamb, int stiter, int k) {
@@ -112,8 +124,10 @@ public class Experiment {
     private static AzamonState selectgenerator(int i, int nPaq, double prop) {
         AzamonState aS = new AzamonState();
         if(i == 1) aS.generateInitialState(nPaq, 1234, prop, 1234);
-        else if(i == 2) aS.generateInitialStateRandom(nPaq, 1234, prop, 1234);
-        else aS.generateInitialStateSortPriority(nPaq, 1234, prop, 1234);
+        else if (i == 2) aS.generateInitialStateRandom(nPaq, 1234, prop, 1234);
+        else if (i == 3) aS.generateInitialStateSortPriority(nPaq, 1234, prop, 1234);
+        else if (i == 4) aS.generatorA(nPaq, 1234, prop, 1234);
+        else if (i == 5) aS.generatorB(nPaq, 1234, prop, 1234);
         return aS;
     }
 
