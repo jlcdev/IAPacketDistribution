@@ -18,19 +18,21 @@ public class AzamonSuccessorFunctionSA implements SuccessorFunction{
         ArrayList<Successor> retVal = new ArrayList<>();
         HeuristicFunction heuristic = (parentState.getSelectedHeuristic() == 1)? new AzamonHeuristic(): new AzamonHeuristicHappiness();
         Random random = AzamonState.getRandom();
+        int numPaq = parentState.getPaquetes().size();
+        int numOf = parentState.getTransporte().size();
         int p, q, t;
         for(int i = parentState.getStiter(); i > 0; --i){
-            if(random.nextInt(2) == 0){
-                p = random.nextInt(parentState.getPaquetes().size());
-                t = random.nextInt(parentState.getTransporte().size());
+            if(random.nextInt(numPaq + numOf) >= numPaq){
+                p = random.nextInt(numPaq);
+                t = random.nextInt(numOf);
                 if(!parentState.esMovible(p, t)) continue;
                 AzamonState newState = new AzamonState(parentState);
                 newState.moverPaquete(p, t);
                 retVal.add(new Successor("MOVER(" + p + ", " + t + ", coste: " + heuristic.getHeuristicValue(newState) + ")", newState));
             }else{
-                p = random.nextInt(parentState.getPaquetes().size());
+                p = random.nextInt(numPaq);
                 do{
-                    q = random.nextInt(parentState.getPaquetes().size());
+                    q = random.nextInt(numPaq);
                 }while(p == q);
                 if(!parentState.esIntercambiable(p, q)) continue;
                 AzamonState newState = new AzamonState(parentState);
