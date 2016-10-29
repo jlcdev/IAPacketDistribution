@@ -21,24 +21,22 @@ public class AzamonSuccessorFunctionSA implements SuccessorFunction{
         int numPaq = parentState.getPaquetes().size();
         int numOf = parentState.getTransporte().size();
         int p, q, t;
-        for(int i = parentState.getStiter(); i > 0; --i){
-            if(random.nextInt(numPaq + numOf) >= numPaq){
+        if(random.nextInt(numPaq + numOf) >= numPaq){
+            do{
                 p = random.nextInt(numPaq);
                 t = random.nextInt(numOf);
-                if(!parentState.esMovible(p, t)) continue;
-                AzamonState newState = new AzamonState(parentState);
-                newState.moverPaquete(p, t);
-                retVal.add(new Successor("MOVER(" + p + ", " + t + ", coste: " + heuristic.getHeuristicValue(newState) + ")", newState));
-            }else{
+            }while(!parentState.esMovible(p,t));
+            AzamonState newState = new AzamonState(parentState);
+            newState.moverPaquete(p, t);
+            retVal.add(new Successor("", newState));
+        }else{
+            do{
                 p = random.nextInt(numPaq);
-                do{
-                    q = random.nextInt(numPaq);
-                }while(p == q);
-                if(!parentState.esIntercambiable(p, q)) continue;
-                AzamonState newState = new AzamonState(parentState);
-                newState.intercambiarPaquete(p, q);
-                retVal.add(new Successor("INTERCAMBIO(" + p + ", " + q + ", coste: " + heuristic.getHeuristicValue(newState) + ")", newState));
-            }
+                q = random.nextInt(numPaq);
+            }while(p == q && !parentState.esIntercambiable(p,q));
+            AzamonState newState = new AzamonState(parentState);
+            newState.intercambiarPaquete(p, q);
+            retVal.add(new Successor("", newState));
         }
         return retVal;
     }
