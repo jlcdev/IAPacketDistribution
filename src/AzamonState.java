@@ -5,7 +5,6 @@ import IA.Azamon.Transporte;
 import comparators.PaquetePesoComparator;
 import comparators.PaquetePriorityComparator;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 /**
