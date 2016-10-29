@@ -21,10 +21,6 @@ public class Experiment {
     public static void initial(String[] args) {
         /*exp1();
         System.out.println("\n----------------------------------------------------------------------\n");*/
-        for (int i = 0; i < 10; i++) {
-            exp2();
-            System.out.println("\n----------------------------------------------------------------------\n");
-        }
         exp2();
         System.out.println("\n----------------------------------------------------------------------\n");
         /*exp3();
@@ -162,6 +158,7 @@ public class Experiment {
         sumaTime += (end - start);
         sumaPasos += hillClimbingSearch.getNodesExpanded();
         sumaCosteFinal += ((AzamonState)hillClimbingSearch.getGoalState()).coste();
+        System.out.println(sumaCosteInicial +" " +sumaCosteFinal +" " +sumaTime +" " +sumaPasos);
     }
 
     private static void calculateSA(Problem problem, SimulatedAnnealingSearch s) throws Exception {
