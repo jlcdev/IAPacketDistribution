@@ -14,6 +14,13 @@ public class Experiment {
     private static int iterProp = 10;
     private static int iterPaq = 5;
 
+    private static int numPaquetes = 100;
+    private static double numProporcion = 1.2;
+    private static int numMaxIt = 100000;
+    private static double numLambda = 0.00001;
+    private static int numStiter = 1000;
+    private static int numK = 10;
+
     private static double sumaCosteInicial;
     private static double sumaCosteFinal;
     private static long sumaTime;
@@ -41,12 +48,12 @@ public class Experiment {
     private static void exp7() {
         DecimalFormat df = new DecimalFormat("#.##");
         System.out.println("Experimento 7.1: Determinar conjunto de operadores");
-        experimentoSA(1, 100, 1.2, 1, 10000, 0.001, 1000, 10);
+        experimentoSA(1, numPaquetes, numProporcion, 1, numMaxIt, numLambda, numStiter, numK);
         System.out.println("\n----------------------------------------------------------------------\n");
         System.out.println("Experimento 7.2: Determinar estrategia de generación de solucion inicial");
         for(int i = 1; i <= 3; i++){
             System.out.print("Generador " +i +"  ");
-            experimentoSA(i, 100, 1.2, 1, 10000, 0.001, 1000, 10);
+            experimentoSA(i, numPaquetes, numProporcion, 1, numMaxIt, numLambda, numStiter, numK);
         }
         System.out.println("\n----------------------------------------------------------------------\n");
         //Exp3
@@ -54,7 +61,7 @@ public class Experiment {
         double proporcion = 1.2;
         for(int i = 1; i < iterProp; i++){
             System.out.print("Proporcion: " +df.format(proporcion) +"  ");
-            experimentoSA(1, 100, proporcion, 1, 10000, 0.001, 1000, 10);
+            experimentoSA(1, numPaquetes, proporcion, 1, numMaxIt, numLambda, numStiter, numK);
             proporcion += 0.2;
         }
         System.out.println("\n----------------------------------------------------------------------\n");
@@ -62,32 +69,32 @@ public class Experiment {
         int paq = 100;
         for(int i = 1; i < iterPaq; i++){
             System.out.print("Paquetes: " +paq  +"  ");
-            experimentoSA(1, paq, 1.2, 1, 10000, 0.001, 1000, 10);
+            experimentoSA(1, paq, numProporcion, 1, numMaxIt, numLambda, numStiter, numK);
             paq += 50;
         }
         System.out.println("\n----------------------------------------------------------------------\n");
         System.out.println("Experimento 7.6: Funciones heuristicas");
-        experimentoSA(1, 100, 1.2, 2, 10000, 0.001, 1000, 10);
+        experimentoSA(1, numPaquetes, numProporcion, 2, numMaxIt, numLambda, numStiter, numK);
         System.out.println("\n----------------------------------------------------------------------\n");
 
     }
 
     private static void exp6() {
         System.out.println("Experimento 6: Funciones heuristicas");
-        experimentoHC(1, 100, 1.2, 2);
+        experimentoHC(1, numPaquetes, numProporcion, 2);
     }
 
     private static void exp1(){
         System.out.println("Experimento 1: Determinar conjunto de operadores");
         //Solo un tipo de operadores:
-        experimentoHC(1, 100, 1.2, 1);
+        experimentoHC(1, numPaquetes, numProporcion, 1);
     }
 
     private static void exp2() {
         System.out.println("Experimento 2: Determinar estrategia de generación de solucion inicial");
         for(int i = 1; i <= 3; i++){
             System.out.print("Generador " +i +"  ");
-            experimentoHC(i, 100, 1.2, 1);
+            experimentoHC(i, numPaquetes, numProporcion, 1);
         }
     }
 
@@ -107,7 +114,7 @@ public class Experiment {
             for (int j = startItStep; j < endItStep; j++) {
                 for (int k = startK; k < endK; k++) {
                     for (double l = startLamb; l < endLamb; l += startLamb){
-                        experimentoSA(3, 100, 1.2, 1, i, l, j, k);
+                        experimentoSA(3, numPaquetes, numProporcion, 1, i, l, j, k);
                     }
                 }
             }
@@ -120,7 +127,7 @@ public class Experiment {
         DecimalFormat df = new DecimalFormat("#.##");
         for(int i = 1; i < iterProp; i++){
             System.out.print("Proporcion: " +df.format(proporcion) +"  ");
-            experimentoHC(1, 100, proporcion, 1);
+            experimentoHC(1, numPaquetes, proporcion, 1);
             proporcion += 0.2;
         }
     }
@@ -130,7 +137,7 @@ public class Experiment {
         int paq = 100;
         for(int i = 1; i < iterPaq; i++){
             System.out.print("Paquetes: " +paq  +"  ");
-            experimentoHC(1, paq, 1.2, 1);
+            experimentoHC(1, paq, numProporcion, 1);
             paq += 50;
         }
     }

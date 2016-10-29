@@ -320,7 +320,7 @@ public class AzamonState {
 
     public double felicidad() {
         double a = 1.0,
-                b = 1.0;
+               b = 1 - a;
         double response = a * this.coste();
         double precioDia = 0.25;
         int nPaq = this.getPaqueteEnOferta().length, j;
