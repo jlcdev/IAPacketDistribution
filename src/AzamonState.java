@@ -17,7 +17,6 @@ public class AzamonState {
     private Paquetes paquetes;
     private Transporte transporte;
     private int selectedHeuristic;
-    private int stiter;
 
     public AzamonState(){}
 
@@ -103,7 +102,7 @@ public class AzamonState {
     private boolean checkGeneratedSolution(){
         boolean[] verified = new boolean[this.paqueteEnOferta.length];
         Arrays.fill(verified, false);
-        for(int i = this.paqueteEnOferta.length; i >= 0; --i){
+        for(int i = this.paqueteEnOferta.length -1; i >= 0; --i){
             Paquete p = paquetes.get(i);
             Oferta o = transporte.get(this.paqueteEnOferta[i]);
             switch(p.getPrioridad()){
@@ -263,9 +262,6 @@ public class AzamonState {
     public int[] getPaqueteEnOferta() {
         return paqueteEnOferta;
     }
-    public double[] getPesoDisponibleOfertas() {
-        return pesoDisponibleOfertas;
-    }
     public Paquetes getPaquetes() {
         return paquetes;
     }
@@ -275,14 +271,6 @@ public class AzamonState {
 
     public int getSelectedHeuristic() {
         return selectedHeuristic;
-    }
-
-    public int getStiter() {
-        return stiter;
-    }
-
-    public void setStiter(int stiter) {
-        this.stiter = stiter;
     }
 
     public static Random getRandom() {

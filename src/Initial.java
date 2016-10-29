@@ -69,10 +69,12 @@ public class Initial {
                 azamonState.generateInitialState(numPaq, seedPaquetes, proportion, seedOfertas);
                 break;
             case 2:
-                azamonState.generateInitialStateRandom(numPaq, seedPaquetes, proportion, seedOfertas);
+                azamonState.generatorB(numPaq, seedPaquetes, proportion, seedOfertas);
+                //azamonState.generateInitialStateRandom(numPaq, seedPaquetes, proportion, seedOfertas);
                 break;
             case 3:
-                azamonState.generateInitialStateSortPriority(numPaq, seedPaquetes, proportion, seedOfertas);
+                azamonState.generatorA(numPaq, seedPaquetes, proportion, seedOfertas);
+                //azamonState.generateInitialStateSortPriority(numPaq, seedPaquetes, proportion, seedOfertas);
                 break;
         }
         return azamonState;
@@ -123,7 +125,7 @@ public class Initial {
             System.out.println("Introduce el valor lambda:");
             double lamb = scan.nextDouble();
             System.out.println("Iniciando Simulated Annealing");
-            azamonState.setStiter(stiter);
+            System.out.println("Coste inicial: " + heuristicFunction.getHeuristicValue(azamonState));
             SimulatedAnnealingSearch simulatedAnnealingSearch = new SimulatedAnnealingSearch(maxIterations, stiter, k, lamb);
             long start = System.currentTimeMillis();
             SearchAgent searchAgent = new SearchAgent(problem, simulatedAnnealingSearch);
