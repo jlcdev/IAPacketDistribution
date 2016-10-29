@@ -157,7 +157,6 @@ public class Experiment {
         sumaTime += (end - start);
         sumaPasos += hillClimbingSearch.getNodesExpanded();
         sumaCosteFinal += ((AzamonState)hillClimbingSearch.getGoalState()).coste();
-        System.out.println(sumaCosteInicial +" " +sumaCosteFinal +" " +sumaTime +" " +sumaPasos);
     }
 
     private static void calculateSA(Problem problem, SimulatedAnnealingSearch s) throws Exception {
