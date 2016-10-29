@@ -4,6 +4,7 @@ import IA.Azamon.Paquetes;
 import IA.Azamon.Transporte;
 import comparators.PaquetePriorityComparator;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -99,22 +100,24 @@ public class AzamonState {
     }
     //solo verificar el caso de que la prioridad sea superior
     private boolean checkGeneratedSolution(){
+        boolean[] verified = new boolean[this.paqueteEnOferta.length];
+        Arrays.fill(verified, false);
         for(int i = this.paqueteEnOferta.length; i >= 0; --i){
             Paquete p = paquetes.get(i);
             Oferta o = transporte.get(this.paqueteEnOferta[i]);
             switch(p.getPrioridad()){
                 case 0:
-                    if(o.getDias() > 1) return true;
+                    if(o.getDias() > 1) verified[i] = true;
                     break;
                 case 1:
-                    if(o.getDias() < 2 && o.getDias() > 3) return true;
+                    if(o.getDias() < 2 && o.getDias() > 3) verified[i] = true;
                     break;
                 case 2:
-                    if(o.getDias() < 4) return true;
+                    if(o.getDias() < 4) verified[i] = true;
                     break;
             }
         }
-        return false;
+        return !Arrays.asList(verified).contains(false);
     }
 
     //Funciones generadoras
