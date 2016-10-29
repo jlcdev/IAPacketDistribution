@@ -62,7 +62,7 @@ public class AzamonState {
     }
 
     public void generatorB(final int numPaq, final int seedPaquetes, final double proporcion, final int seedOfertas){
-        random = new Random((long)(seedPaquetes * seedOfertas));
+        random = new Random();
         this.paquetes = new Paquetes(numPaq, seedPaquetes);
         this.transporte = new Transporte(this.paquetes, proporcion, seedOfertas);
         int transSize = this.transporte.size();
