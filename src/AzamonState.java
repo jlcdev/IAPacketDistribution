@@ -296,4 +296,17 @@ public class AzamonState {
         }
         return response;
     }
+
+    public double felicidad() {
+        double a = 1.0,
+                b = 1.0;
+        double response = a * this.coste();
+        double precioDia = 0.25;
+        int nPaq = this.getPaqueteEnOferta().length, j;
+        for(int i = 0; i < nPaq; ++i){
+            j = this.getPaqueteEnOferta()[i];
+            response -= (b * precioDia * this.calcDiasFelicidad(i, j));
+        }
+        return response;
+    }
 }
