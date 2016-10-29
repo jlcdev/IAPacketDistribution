@@ -72,7 +72,8 @@ public class AzamonState {
         }
         this.paqueteEnOferta = new int[this.paquetes.size()];
         int pSelected = 0, numIterMax = numPaq * numPaq, iter = 0;
-        List<Boolean> assigned = new ArrayList<>();
+        List<Boolean> assigned = new ArrayList<Boolean>(Collections.nCopies(this.paquetes.size(), false));
+
         while(assigned.contains(false) && pSelected < numPaq && iter < numIterMax){
             if(!assigned.get(pSelected)){
                 int o = random.nextInt(transSize);
