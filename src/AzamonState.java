@@ -71,27 +71,19 @@ public class AzamonState {
         }
         this.paqueteEnOferta = new int[this.paquetes.size()];
         int pSelected = 0, numIterMax = numPaq * numPaq, iter = 0;
-        List<Boolean> assigned = new ArrayList<Boolean>(Collections.nCopies(this.paquetes.size(), false));
 
-        while(assigned.contains(false) && pSelected < numPaq && iter < numIterMax){
-            if(!assigned.get(pSelected)){
-                int o = random.nextInt(transSize);
-                if(this.ponerPaquete(pSelected, o, false)){
-                    assigned.set(pSelected, true);
-                    ++pSelected;
-                    iter = 0;
-                }
-            }else{
+        while(iter < numIterMax && pSelected < numPaq){
+            int o = random.nextInt(transSize);
+            if(this.ponerPaquete(pSelected, o, false)){
                 ++pSelected;
+                iter = 0;
             }
             ++iter;
         }
         //check conditions
-        if(assigned.contains(false) && checkGeneratedSolution()){
+        if(pSelected < numPaq && !isGenerationCorrect()){
             this.transporte = null;
             this.paquetes = null;
-            assigned = null;
-            System.out.println("Generation failed, generation next round.");
             generatorB(numPaq, seedPaquetes, proporcion, seedOfertas);
             return;
         }else{
@@ -99,25 +91,23 @@ public class AzamonState {
         }
     }
     //solo verificar el caso de que la prioridad sea superior
-    private boolean checkGeneratedSolution(){
-        boolean[] verified = new boolean[this.paqueteEnOferta.length];
-        Arrays.fill(verified, false);
+    private boolean isGenerationCorrect(){
         for(int i = this.paqueteEnOferta.length -1; i >= 0; --i){
-            Paquete p = paquetes.get(i);
-            Oferta o = transporte.get(this.paqueteEnOferta[i]);
-            switch(p.getPrioridad()){
+            int prioridad = paquetes.get(i).getPrioridad();
+            int dias = transporte.get(this.paqueteEnOferta[i]).getDias();
+            switch(prioridad){
                 case 0:
-                    if(o.getDias() > 1) verified[i] = true;
+                    if(dias > 1) return false;
                     break;
                 case 1:
-                    if(o.getDias() < 2 && o.getDias() > 3) verified[i] = true;
+                    if(dias < 2 && dias > 3) return false;
                     break;
                 case 2:
-                    if(o.getDias() < 4) verified[i] = true;
+                    if(dias < 4) return false;
                     break;
             }
         }
-        return !Arrays.asList(verified).contains(false);
+        return true;
     }
 
     //Funciones generadoras
