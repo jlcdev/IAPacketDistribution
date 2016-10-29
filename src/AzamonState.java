@@ -2,6 +2,7 @@ import IA.Azamon.Oferta;
 import IA.Azamon.Paquete;
 import IA.Azamon.Paquetes;
 import IA.Azamon.Transporte;
+import comparators.PaquetePesoComparator;
 import comparators.PaquetePriorityComparator;
 
 import java.lang.reflect.Array;
@@ -108,6 +109,37 @@ public class AzamonState {
             }
         }
         return true;
+    }
+
+    public void generatorC(int numPaq, int seedPaquetes, double proporcion, int seedOfertas){
+        random = new Random((long)(seedPaquetes * seedOfertas));
+        this.paquetes = new Paquetes(numPaq, seedPaquetes);
+        this.transporte = new Transporte(this.paquetes, proporcion, seedOfertas);
+        Collections.sort(this.paquetes, new PaquetePesoComparator());
+        this.paqueteEnOferta = new int[this.paquetes.size()];
+        this.pesoDisponibleOfertas = new double[this.transporte.size()];
+        boolean[] assigned = new boolean[this.paquetes.size()];
+        Arrays.fill(assigned, false);
+        for(int i = 0; i < this.transporte.size(); ++i){
+            this.pesoDisponibleOfertas[i] = this.transporte.get(i).getPesomax();
+        }
+        int nPaq = this.paquetes.size(), nTrans = this.transporte.size();
+        // prio == envio
+        for(int i = 0; i < nPaq; ++i){
+            for(int j = 0; j < nTrans; ++j){
+                if(this.ponerPaquete(i, j, true)){
+                    assigned[i] = true;
+                    break;
+                }
+            }
+        }
+        // assign prio <= envio to unassigned paq.
+        for(int i = nPaq -1; i >= 0; --i){
+            if(assigned[i]) continue;
+            for(int j = nTrans -1; j >= 0; --j){
+                if(this.ponerPaquete(i, j, false)) break;
+            }
+        }
     }
 
     //Funciones generadoras
