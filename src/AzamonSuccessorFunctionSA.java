@@ -17,7 +17,6 @@ public class AzamonSuccessorFunctionSA implements SuccessorFunction{
         AzamonState parentState = (AzamonState) o;
         List retVal = new ArrayList<>();
         Random random = AzamonState.getRandom();
-        parentState.numeroPaquetes()
         int numPaq = parentState.numeroPaquetes(),
             numOf = parentState.numeroTransportes(),
             p, q, t;
