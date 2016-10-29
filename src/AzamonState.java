@@ -330,4 +330,9 @@ public class AzamonState {
         }
         return response;
     }
+
+    public double heuristicValue() {
+        if(this.selectedHeuristic == 1) return coste();
+        else return felicidad();
+    }
 }
