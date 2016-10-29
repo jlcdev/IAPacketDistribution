@@ -15,12 +15,12 @@ public class AzamonSuccessorFunctionSA implements SuccessorFunction{
     @Override
     public List getSuccessors(Object o){
         AzamonState parentState = (AzamonState) o;
-        ArrayList<Successor> retVal = new ArrayList<>();
-        HeuristicFunction heuristic = (parentState.getSelectedHeuristic() == 1)? new AzamonHeuristic(): new AzamonHeuristicHappiness();
+        List retVal = new ArrayList<>();
         Random random = AzamonState.getRandom();
-        int numPaq = parentState.getPaquetes().size();
-        int numOf = parentState.getTransporte().size();
-        int p, q, t;
+        parentState.numeroPaquetes()
+        int numPaq = parentState.numeroPaquetes(),
+            numOf = parentState.numeroTransportes(),
+            p, q, t;
         if(random.nextInt(numPaq + numOf) >= numPaq){
             do{
                 p = random.nextInt(numPaq);
