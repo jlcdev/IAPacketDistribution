@@ -66,14 +66,14 @@ public class Initial {
         int numGenerator = selectInitial();
         switch (numGenerator) {
             case 1:
-                azamonState.generateInitialState(numPaq, seedPaquetes, proportion, seedOfertas);
+                azamonState.generatorA(numPaq, seedPaquetes, proportion, seedOfertas);
                 break;
             case 2:
                 azamonState.generatorB(numPaq, seedPaquetes, proportion, seedOfertas);
                 //azamonState.generateInitialStateRandom(numPaq, seedPaquetes, proportion, seedOfertas);
                 break;
             case 3:
-                azamonState.generatorA(numPaq, seedPaquetes, proportion, seedOfertas);
+                azamonState.generatorC(numPaq, seedPaquetes, proportion, seedOfertas);
                 //azamonState.generateInitialStateSortPriority(numPaq, seedPaquetes, proportion, seedOfertas);
                 break;
         }

@@ -10,6 +10,8 @@ import java.util.Comparator;
 public class PaquetePesoComparator implements Comparator<Paquete> {
     @Override
     public int compare(Paquete o1, Paquete o2) {
+        if(o1.getPrioridad() < o2.getPrioridad()) return -1;
+        if(o1.getPrioridad() > o2.getPrioridad()) return 1;
         return (o1.getPeso() < o2.getPeso())?-1:(o1.getPeso() == o2.getPeso())?0:1;
     }
 }
