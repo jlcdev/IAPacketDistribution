@@ -18,7 +18,9 @@ public class AzamonState {
     private Transporte transporte;
     private int selectedHeuristic;
 
-    public AzamonState(){}
+    public AzamonState(){
+        random = new Random();
+    }
 
     public AzamonState(final AzamonState oldAzamonState){
         this.paquetes = oldAzamonState.paquetes;
@@ -30,7 +32,6 @@ public class AzamonState {
 
     // NEW GENERATOR FUNCTIONS
     public void generatorA(int numPaq, int seedPaquetes, double proporcion, int seedOfertas){
-        random = new Random((long)(seedPaquetes * seedOfertas));
         this.paquetes = new Paquetes(numPaq, seedPaquetes);
         this.transporte = new Transporte(this.paquetes, proporcion, seedOfertas);
         Collections.sort(this.paquetes, new PaquetePriorityComparator());
@@ -61,7 +62,6 @@ public class AzamonState {
     }
 
     public void generatorB(final int numPaq, final int seedPaquetes, final double proporcion, final int seedOfertas){
-        random = new Random();
         this.paquetes = new Paquetes(numPaq, seedPaquetes);
         this.transporte = new Transporte(this.paquetes, proporcion, seedOfertas);
         int transSize = this.transporte.size();
@@ -111,7 +111,6 @@ public class AzamonState {
     }
 
     public void generatorC(int numPaq, int seedPaquetes, double proporcion, int seedOfertas){
-        random = new Random((long)(seedPaquetes * seedOfertas));
         this.paquetes = new Paquetes(numPaq, seedPaquetes);
         this.transporte = new Transporte(this.paquetes, proporcion, seedOfertas);
         Collections.sort(this.paquetes, new PaquetePesoComparator());
@@ -159,6 +158,7 @@ public class AzamonState {
             }
         }
     }
+
     //Pone el paquete en el primer sitio valido
     public void generateInitialState(int numPaq, int seedPaquetes, double proporcion, int seedOfertas){
         random = new Random((long)(seedPaquetes * seedOfertas));
@@ -196,11 +196,11 @@ public class AzamonState {
 
     //Condiciones de aplicabilidad
 
-    public boolean esMovible(int pi, int oj){
+    public boolean canMove(int pi, int oj){
         return ( ((pesoDisponibleOfertas[oj] - paquetes.get(pi).getPeso()) > 0.0) && (calcDiasFelicidad(pi, oj) >= 0) );
     }
 
-    public boolean esIntercambiable(int pi, int pj) {
+    public boolean canInterchangePackets(int pi, int pj) {
         double pesoi = paquetes.get(pi).getPeso();
         double pesoj = paquetes.get(pj).getPeso();
         int ofertai = paqueteEnOferta[pi];
@@ -214,10 +214,23 @@ public class AzamonState {
         return condi && condj && condp;
     }
 
+    public boolean canExchangeOffer(int i, int j){
+        if(i == j) return false;
+        Oferta oi = this.transporte.get(i);
+        Oferta oj = this.transporte.get(j);
+        if(oi.getDias() != oj.getDias()) return false;
+        double pesoOi = oi.getPesomax();
+        double pesoOiOcupado = pesoOi - this.pesoDisponibleOfertas[i];
+        double pesoOj = oj.getPesomax();
+        double pesoOjOcupado = pesoOj - this.pesoDisponibleOfertas[j];
+        if(pesoOiOcupado <= pesoOj && pesoOjOcupado <= pesoOi) return true;
+        return false;
+    }
+
 
     //Operaciones
 
-    public void moverPaquete(int pi, int oj){
+    public void movePacket(int pi, int oj){
         double peso = paquetes.get(pi).getPeso();
         int oi = paqueteEnOferta[pi];
 
@@ -226,7 +239,7 @@ public class AzamonState {
         pesoDisponibleOfertas[oj] -= peso;
     }
 
-    public void intercambiarPaquete(int pi, int pj){
+    public void interchangePacket(int pi, int pj){
         double pesoi = paquetes.get(pi).getPeso();
         double pesoj = paquetes.get(pj).getPeso();
         int ofertai = paqueteEnOferta[pi];
@@ -239,6 +252,21 @@ public class AzamonState {
         //actualizacion pesos
         pesoDisponibleOfertas[ofertai] += (pesoi - pesoj);
         pesoDisponibleOfertas[ofertaj] -= (pesoi - pesoj);
+    }
+
+    public void exchangeOffer(int oi, int oj){
+        List<Integer> listOi = new ArrayList<>();
+        List<Integer> listOj = new ArrayList<>();
+        for(int i = 0; i < this.paqueteEnOferta.length; ++i){
+            if(this.paqueteEnOferta[i] == oi) listOi.add(i);
+            else if(this.paqueteEnOferta[i] == oj) listOj.add(i);
+        }
+        for(Integer p : listOi){
+            movePacket(p, oj);
+        }
+        for(Integer p : listOj){
+            movePacket(p, oi);
+        }
     }
 
     //Si estricto = true solo permitimos prio == envio, sino permitimos prio <= envio

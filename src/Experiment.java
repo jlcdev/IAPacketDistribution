@@ -142,6 +142,7 @@ public class Experiment {
         AzamonState azamonState = selectgenerator(inicial, nPaq, prop);
         try{
             Problem problem = new Problem(azamonState, new AzamonSuccessorFunctionSA(), new AzamonGoalTest(), new AzamonHeuristic());
+
             SimulatedAnnealingSearch simulatedAnnealingSearch = new SimulatedAnnealingSearch(maxIt, stiter, k, lamb);
             calculateSA(problem, simulatedAnnealingSearch);
         }catch(Exception e){

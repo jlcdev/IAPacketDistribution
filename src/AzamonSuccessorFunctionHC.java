@@ -16,25 +16,38 @@ public class AzamonSuccessorFunctionHC implements SuccessorFunction{
         AzamonState parentState = (AzamonState)o;
         ArrayList<Successor> retVal = new ArrayList<>();
         HeuristicFunction heuristic = (parentState.getSelectedHeuristic() == 1)? new AzamonHeuristic(): new AzamonHeuristicHappiness();
+        int numPaq = parentState.numeroPaquetes()-1;
+        int numTrans = parentState.numeroTransportes()-1;
 
         //MOVE OPERATOR
-        for(int i = parentState.numeroPaquetes()-1; i >= 0; --i){
-            for(int j = parentState.numeroTransportes()-1; j >= 0; --j){
-                if(parentState.esMovible(i, j)){
+        for(int i = numPaq; i >= 0; --i){
+            for(int j = numTrans; j >= 0; --j){
+                if(parentState.canMove(i, j)){
                     AzamonState newState = new AzamonState(parentState);
-                    newState.moverPaquete(i, j);
-                    retVal.add(new Successor("MOVER(paquete: " + i + ", oferta: " + j + ", coste: " + heuristic.getHeuristicValue(newState) + ")", newState));
+                    newState.movePacket(i, j);
+                    retVal.add(new Successor("MOVE(packet: " + i + ", offer: " + j + ", cost: " + heuristic.getHeuristicValue(newState) + ")", newState));
                 }
             }
         }
 
         //CHANGE OPERATOR
-        for(int i = parentState.numeroPaquetes()-1; i >= 0; --i){
-            for(int j = parentState.numeroPaquetes()-1; j >= 0; --j){
-                if(parentState.esIntercambiable(i, j)){
+        for(int i = numPaq; i >= 0; --i){
+            for(int j = numPaq; j >= 0; --j){
+                if(parentState.canInterchangePackets(i, j)){
                     AzamonState newState = new AzamonState(parentState);
-                    newState.intercambiarPaquete(i, j);
-                    retVal.add(new Successor("INTERCAMBIO(paquete:" + i + ", paquete:" + j + ", coste: " + heuristic.getHeuristicValue(newState) + ")", newState));
+                    newState.interchangePacket(i, j);
+                    retVal.add(new Successor("INTERCHANGE(packet:" + i + ", packet:" + j + ", cost: " + heuristic.getHeuristicValue(newState) + ")", newState));
+                }
+            }
+        }
+
+        //EXCHANGE CONTAINER OPERATOR
+        for(int i = numTrans; i >= 0; --i){
+            for(int j = i-1; j >= 0; --j){
+                if(parentState.canExchangeOffer(i, j)){
+                    AzamonState newState = new AzamonState(parentState);
+                    newState.exchangeOffer(i, j);
+                    retVal.add(new Successor("EXCHANGE(offer: " + i + ", offer: " + j + ", cost: " + heuristic.getHeuristicValue(newState) + ")", newState));
                 }
             }
         }
