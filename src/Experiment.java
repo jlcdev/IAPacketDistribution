@@ -5,6 +5,7 @@ import aima.search.informed.HillClimbingSearch;
 import aima.search.informed.SimulatedAnnealingSearch;
 
 import java.text.DecimalFormat;
+import java.util.Random;
 
 /**
  * Created by albert campano on 27/10/2016.
@@ -284,5 +285,41 @@ public class Experiment {
             sumaCosteFelicidadFinal += ((AzamonState)s.getGoalState()).felicidad();
         }
 
+    }
+
+    private static void randomSAParamsSearch(){
+        int minP1 = 0;
+        int minP2 = 0;
+        int minK = 0;
+        double minLamda = 0.0;
+        double minCoste = 1000000;
+        double[] lambdaList = new double[]{0.1, 0.01, 0.001, 0.0001, 0.00001, 0.000001, 0.0000001};
+        Random random = new Random();
+        AzamonState azamonState = new AzamonState();
+        azamonState.generatorA(100, 1234, 1.2, 1234);
+        AzamonHeuristic h = new AzamonHeuristic();
+        Problem p = new Problem(azamonState, new AzamonSuccessorFunctionSA(), new AzamonGoalTest(), h);
+        try{
+            for(int i = 0; i < 100000; ++i){
+                int p1 = random.nextInt(10000000);
+                int p2 = random.nextInt(1000);
+                int p3 = random.nextInt(100);
+                double p4 = lambdaList[random.nextInt(lambdaList.length)];
+                SimulatedAnnealingSearch simulatedAnnealingSearch = new SimulatedAnnealingSearch(p1, p2, p3, p4);
+                SearchAgent searchAgent = new SearchAgent(p, simulatedAnnealingSearch);
+                double coste = h.getHeuristicValue(searchAgent.getActions().get(0));
+                if(coste < minCoste){
+                    minP1 = p1;
+                    minP2 = p2;
+                    minK = p3;
+                    minLamda = p4;
+                    minCoste = coste;
+                }
+            }
+            System.out.println("Prarametros minimos encontrados:");
+            System.out.println("Steps: " + minP1 + ", stiter: " + minP2 + ", k: " + minK + ", lamda: " + minLamda);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 }
