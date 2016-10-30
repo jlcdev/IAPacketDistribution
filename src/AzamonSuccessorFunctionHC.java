@@ -40,7 +40,7 @@ public class AzamonSuccessorFunctionHC implements SuccessorFunction{
                 }
             }
         }
-
+/*
         //EXCHANGE CONTAINER OPERATOR
         for(int i = numTrans; i >= 0; --i){
             for(int j = i-1; j >= 0; --j){
@@ -51,6 +51,8 @@ public class AzamonSuccessorFunctionHC implements SuccessorFunction{
                 }
             }
         }
+        */
         return retVal;
+
     }
 }

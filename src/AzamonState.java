@@ -214,6 +214,7 @@ public class AzamonState {
         return condi && condj && condp;
     }
 
+    /*
     public boolean canExchangeOffer(int i, int j){
         if(i == j) return false;
         Oferta oi = this.transporte.get(i);
@@ -226,6 +227,7 @@ public class AzamonState {
         if(pesoOiOcupado <= pesoOj && pesoOjOcupado <= pesoOi) return true;
         return false;
     }
+    */
 
 
     //Operaciones
@@ -254,6 +256,7 @@ public class AzamonState {
         pesoDisponibleOfertas[ofertaj] -= (pesoi - pesoj);
     }
 
+    /*
     public void exchangeOffer(int oi, int oj){
         List<Integer> listOi = new ArrayList<>();
         List<Integer> listOj = new ArrayList<>();
@@ -268,6 +271,7 @@ public class AzamonState {
             movePacket(p, oi);
         }
     }
+    */
 
     //Si estricto = true solo permitimos prio == envio, sino permitimos prio <= envio
     private boolean ponerPaquete(int pi, int oj, boolean estricto){
