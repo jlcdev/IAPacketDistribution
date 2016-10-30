@@ -319,20 +319,24 @@ public class AzamonState {
     }
 
     public double felicidad() {
-        double a = 1.0,
-               b = 1 - a;
-        double response = a * this.coste();
         double precioDia = 0.25;
+        double response = 0.0;
         int nPaq = this.getPaqueteEnOferta().length, j;
         for(int i = 0; i < nPaq; ++i){
             j = this.getPaqueteEnOferta()[i];
-            response -= (b * precioDia * this.calcDiasFelicidad(i, j));
+            response -= (precioDia * this.calcDiasFelicidad(i, j));
         }
         return response;
     }
 
+    public double calcfelicidad() {
+        double a = 1.0;
+        double b = 1.0;
+        return (a*this.coste() + b*this.felicidad());
+    }
+
     public double heuristicValue() {
         if(this.selectedHeuristic == 1) return coste();
-        else return felicidad();
+        else return this.calcfelicidad();
     }
 }

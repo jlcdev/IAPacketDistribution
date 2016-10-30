@@ -21,6 +21,12 @@ public class Experiment {
     private static int numStiter = 1000;
     private static int numK = 10;
 
+    private static boolean extendido = false;
+    private static double sumaCosteFelicidadIncial;
+    private static double sumaCosteFelicidadFinal;
+    private static double sumaCosteAlmInicial;
+    private static double sumaCosteAlmFinal;
+
     private static double sumaCosteInicial;
     private static double sumaCosteFinal;
     private static long sumaTime;
@@ -74,14 +80,18 @@ public class Experiment {
         }
         System.out.println("\n----------------------------------------------------------------------\n");
         System.out.println("Experimento 7.6: Funciones heuristicas");
+        extendido = true;
         experimentoSA(1, numPaquetes, numProporcion, 2, numMaxIt, numLambda, numStiter, numK);
+        extendido = false;
         System.out.println("\n----------------------------------------------------------------------\n");
 
     }
 
     private static void exp6() {
         System.out.println("Experimento 6: Funciones heuristicas");
+        extendido = true;
         experimentoHC(1, numPaquetes, numProporcion, 2);
+        extendido = false;
     }
 
     private static void exp1(){
@@ -143,6 +153,13 @@ public class Experiment {
     }
 
     private static void experimentoHC(int inicial, int nPaq, double prop, int heuristic) {
+        if(extendido) {
+            sumaCosteFelicidadIncial = 0.0;
+            sumaCosteFelicidadFinal = 0.0;
+            sumaCosteAlmInicial = 0.0;
+            sumaCosteAlmFinal = 0.0;
+        }
+
         sumaCosteInicial = 00.;
         sumaCosteFinal = 0.0;
         sumaTime = 0;
@@ -156,9 +173,24 @@ public class Experiment {
         int mediaP = sumaPasos/nrounds;
         DecimalFormat df = new DecimalFormat("#.##");
         System.out.println("C.Ini.: " +(df.format(mediaCI)) +" C.Fin.: " +(df.format(mediaCF)) +" Time: " +(mediaT) +" Pasos: " +(mediaP));
+        if(extendido) {
+            double mediaCFI = sumaCosteFelicidadIncial/nrounds;
+            double mediaCFF = sumaCosteFelicidadFinal/nrounds;
+            double mediaCTI = sumaCosteAlmInicial /nrounds;
+            double mediaCTF = sumaCosteAlmFinal /nrounds;
+            System.out.print("C.Ini.Fel: " +(df.format(mediaCFI)) +" C.Fin.Fel: " +(df.format(mediaCFF)) );
+            System.out.println(" C.Ini.Alm: " +(df.format(mediaCTI)) +" C.Fin.Alm: " +(df.format(mediaCTF)) );
+        }
     }
 
     private static void experimentoSA(int inicial, int nPaq, double prop, int heuristic, int maxIt, double lamb, int stiter, int k) {
+        if(extendido) {
+            sumaCosteFelicidadIncial = 0.0;
+            sumaCosteFelicidadFinal = 0.0;
+            sumaCosteAlmInicial = 0.0;
+            sumaCosteAlmFinal = 0.0;
+        }
+
         sumaCosteInicial = 00.;
         sumaCosteFinal = 0.0;
         sumaTime = 0;
@@ -172,6 +204,14 @@ public class Experiment {
         int mediaP = sumaPasos/nrounds;
         DecimalFormat df = new DecimalFormat("#.##");
         System.out.println("C.Ini.: " +(df.format(mediaCI)) +" C.Fin.: " +(df.format(mediaCF)) +" Time: " +(mediaT) +" Pasos: " +(mediaP));
+        if(extendido) {
+            double mediaCFI = sumaCosteFelicidadIncial/nrounds;
+            double mediaCFF = sumaCosteFelicidadFinal/nrounds;
+            double mediaCTI = sumaCosteAlmInicial /nrounds;
+            double mediaCTF = sumaCosteAlmFinal /nrounds;
+            System.out.print("C.Ini.Fel: " +(df.format(mediaCFI)) +" C.Fin.Fel: " +(df.format(mediaCFF)) );
+            System.out.println(" C.Ini.Alm: " +(df.format(mediaCTI)) +" C.Fin.Alm: " +(df.format(mediaCTF)) );
+        }
     }
 
     private static AzamonState selectgenerator(int i, int nPaq, double prop) {
@@ -209,22 +249,40 @@ public class Experiment {
     }
 
     private static void calculateHC(Problem problem, HillClimbingSearch hillClimbingSearch) throws Exception {
-        sumaCosteInicial += ((AzamonState)problem.getInitialState()).coste();
+        sumaCosteInicial += ((AzamonState)problem.getInitialState()).heuristicValue();
+        if(extendido) {
+            sumaCosteAlmInicial += ((AzamonState)problem.getInitialState()).coste();
+            sumaCosteFelicidadIncial += ((AzamonState)problem.getInitialState()).felicidad();
+        }
         long start = System.currentTimeMillis();
         SearchAgent searchAgent = new SearchAgent(problem, hillClimbingSearch);
         long end = System.currentTimeMillis();
         sumaTime += (end - start);
         sumaPasos += hillClimbingSearch.getNodesExpanded();
-        sumaCosteFinal += ((AzamonState)hillClimbingSearch.getGoalState()).coste();
+        sumaCosteFinal += ((AzamonState)hillClimbingSearch.getGoalState()).heuristicValue();
+        if(extendido) {
+            sumaCosteAlmFinal += ((AzamonState)hillClimbingSearch.getGoalState()).coste();
+            sumaCosteFelicidadFinal += ((AzamonState)hillClimbingSearch.getGoalState()).felicidad();
+        }
     }
 
     private static void calculateSA(Problem problem, SimulatedAnnealingSearch s) throws Exception {
-        sumaCosteInicial += ((AzamonState)problem.getInitialState()).coste();
+        sumaCosteInicial += ((AzamonState)problem.getInitialState()).heuristicValue();
+        if(extendido) {
+            sumaCosteAlmInicial += ((AzamonState)problem.getInitialState()).coste();
+            sumaCosteFelicidadIncial += ((AzamonState)problem.getInitialState()).felicidad();
+        }
         long start = System.currentTimeMillis();
         SearchAgent searchAgent = new SearchAgent(problem, s);
         long end = System.currentTimeMillis();
         sumaTime += (end - start);
         sumaPasos += s.getNodesExpanded();
         sumaCosteFinal += ((AzamonState)s.getGoalState()).coste();
+        sumaCosteFinal += ((AzamonState)s.getGoalState()).heuristicValue();
+        if(extendido) {
+            sumaCosteAlmFinal += ((AzamonState)s.getGoalState()).coste();
+            sumaCosteFelicidadFinal += ((AzamonState)s.getGoalState()).felicidad();
+        }
+
     }
 }
