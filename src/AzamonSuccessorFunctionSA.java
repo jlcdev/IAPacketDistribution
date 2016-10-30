@@ -23,17 +23,17 @@ public class AzamonSuccessorFunctionSA implements SuccessorFunction{
             do{
                 p = random.nextInt(numPaq);
                 t = random.nextInt(numOf);
-            }while(!parentState.esMovible(p,t));
+            }while(!parentState.canMove(p,t));
             AzamonState newState = new AzamonState(parentState);
-            newState.moverPaquete(p, t);
+            newState.movePacket(p, t);
             retVal.add(new Successor("", newState));
         }else{
             do{
                 p = random.nextInt(numPaq);
                 q = random.nextInt(numPaq);
-            }while(p == q && !parentState.esIntercambiable(p,q));
+            }while(p == q && !parentState.canInterchangePackets(p,q));
             AzamonState newState = new AzamonState(parentState);
-            newState.intercambiarPaquete(p, q);
+            newState.interchangePacket(p, q);
             retVal.add(new Successor("", newState));
         }
         return retVal;
