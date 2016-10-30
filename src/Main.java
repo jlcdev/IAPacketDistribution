@@ -13,8 +13,24 @@ import java.util.*;
  * Created by Javier Lopez on 17/10/16.
  */
 public class Main {
+    private static Scanner scan = new Scanner(System.in);
     public static void main(String[] args) {
-        Initial.initial(args);
-        //Experiment.initial(args);
+        System.out.println("Selecciona:");
+        System.out.println("1.-Prueba manual");
+        System.out.println("2.-Experimento preparado");
+        System.out.println("3.-Salir");
+        switch(scan.nextInt()){
+            case 1:
+                Initial.initial(args);
+                break;
+            case 2:
+                Experiment.initial(args);
+                break;
+            case 3:
+                scan.close();
+                return;
+            default:
+                main(args);
+        }
     }
 }
