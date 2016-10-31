@@ -12,8 +12,8 @@ import java.util.Random;
  */
 public class Experiment {
     private static int nrounds = 8;
-    private static int iterProp = 8;
-    private static int iterPaq = 4;
+    private static int iterProp = 10;
+    private static int iterPaq = 6;
     private static boolean operadoresExtendido = false;
     private static double coefA;
 
@@ -61,11 +61,10 @@ public class Experiment {
     private static void exp7() {
         DecimalFormat df = new DecimalFormat("#.##");
         System.out.println("Experimento 7.1: Determinar conjunto de operadores");
+        System.out.println("\n Operadores: mover + intercambiar Paquetes");
+        experimentoSA(1, numPaquetes, numProporcion, 1, numMaxIt, numLambda, numStiter, numK);
         System.out.println("\n Operadores: mover + intercambiar Paquetes + intercambiar Ofertas");
         operadoresExtendido = true;
-        experimentoSA(1, numPaquetes, numProporcion, 1, numMaxIt, numLambda, numStiter, numK);
-        operadoresExtendido = false;
-        System.out.println("\n Operadores: mover + intercambiar Paquetes");
         experimentoSA(1, numPaquetes, numProporcion, 1, numMaxIt, numLambda, numStiter, numK);
 
         System.out.println("\n----------------------------------------------------------------------\n");
@@ -102,6 +101,7 @@ public class Experiment {
             experimentoSA(3, numPaquetes, numProporcion, 2, numMaxIt, numLambda, numStiter, numK);
         }
         extendido = false;
+        operadoresExtendido = false;
         System.out.println("\n----------------------------------------------------------------------\n");
 
     }
