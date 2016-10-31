@@ -382,9 +382,7 @@ public class AzamonState {
     }
 
     public double calcfelicidad() {
-        double a = 1.0;
-        double b = 1.0;
-        return (a*this.coste() + b*this.felicidad());
+        return (this.a*this.coste() + this.b*this.felicidad());
     }
 
     public double heuristicValue() {

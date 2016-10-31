@@ -15,6 +15,7 @@ public class Experiment {
     private static int iterProp = 8;
     private static int iterPaq = 4;
     private static boolean operadoresExtendido = false;
+    private static double coefA;
 
     private static int numPaquetes = 100;
     private static double numProporcion = 1.2;
@@ -60,34 +61,46 @@ public class Experiment {
     private static void exp7() {
         DecimalFormat df = new DecimalFormat("#.##");
         System.out.println("Experimento 7.1: Determinar conjunto de operadores");
+        System.out.println("\n Operadores: mover + intercambiar Paquetes + intercambiar Ofertas");
+        operadoresExtendido = true;
         experimentoSA(1, numPaquetes, numProporcion, 1, numMaxIt, numLambda, numStiter, numK);
+        operadoresExtendido = false;
+        System.out.println("\n Operadores: mover + intercambiar Paquetes");
+        experimentoSA(1, numPaquetes, numProporcion, 1, numMaxIt, numLambda, numStiter, numK);
+
         System.out.println("\n----------------------------------------------------------------------\n");
         System.out.println("Experimento 7.2: Determinar estrategia de generación de solucion inicial");
         for(int i = 1; i <= 3; i++){
-            System.out.print("Generador " +i +"  ");
+            System.out.print("\n Generador " +i +"  ");
             experimentoSA(i, numPaquetes, numProporcion, 1, numMaxIt, numLambda, numStiter, numK);
         }
+
         System.out.println("\n----------------------------------------------------------------------\n");
-        //Exp3
         System.out.println("Experimento 7.4.a: Hallar la tendencia al incrementar  la proporción");
         double proporcion = 1.2;
         for(int i = 1; i < iterProp; i++){
-            System.out.print("Proporcion: " +df.format(proporcion) +"  ");
+            System.out.print("\n Proporcion: " +df.format(proporcion) +"  ");
             experimentoSA(1, numPaquetes, proporcion, 1, numMaxIt, numLambda, numStiter, numK);
             proporcion += 0.2;
         }
+
         System.out.println("\n----------------------------------------------------------------------\n");
         System.out.println("Experimento 7.4.b: Hallar la tendencia al incrementar el numero de paquetes");
         int paq = 100;
         for(int i = 1; i < iterPaq; i++){
-            System.out.print("Paquetes: " +paq  +"  ");
+            System.out.print("\n Paquetes: " +paq  +"  ");
             experimentoSA(1, paq, numProporcion, 1, numMaxIt, numLambda, numStiter, numK);
             paq += 50;
         }
+
         System.out.println("\n----------------------------------------------------------------------\n");
         System.out.println("Experimento 7.6: Funciones heuristicas");
         extendido = true;
-        experimentoSA(1, numPaquetes, numProporcion, 2, numMaxIt, numLambda, numStiter, numK);
+        for(int i = 1; i < 10; i++){
+            coefA = i*0.1;
+            System.out.println("\n a: " +coefA +"  b: " +(1-coefA));
+            experimentoSA(1, numPaquetes, numProporcion, 2, numMaxIt, numLambda, numStiter, numK);
+        }
         extendido = false;
         System.out.println("\n----------------------------------------------------------------------\n");
 
@@ -96,24 +109,28 @@ public class Experiment {
     private static void exp6() {
         System.out.println("Experimento 6: Funciones heuristicas");
         extendido = true;
-        experimentoHC(1, numPaquetes, numProporcion, 2);
+        for(int i = 1; i < 10; i++){
+            coefA = i*0.1;
+            System.out.println("\n a: " +coefA +"  b: " +(1-coefA));
+            experimentoHC(1, numPaquetes, numProporcion, 2);
+        }
         extendido = false;
     }
 
     private static void exp1(){
         System.out.println("Experimento 1: Determinar conjunto de operadores");
-        System.out.println("Operadores: mover + intercambiar Paquetes + intercambiar Ofertas");
+        System.out.println("\n Operadores: mover + intercambiar Paquetes + intercambiar Ofertas");
         operadoresExtendido = true;
         experimentoHC(1, numPaquetes, numProporcion, 1);
         operadoresExtendido = false;
-        System.out.println("Operadores: mover + intercambiar Paquetes");
+        System.out.println("\n Operadores: mover + intercambiar Paquetes");
         experimentoHC(1, numPaquetes, numProporcion, 1);
     }
 
     private static void exp2() {
         System.out.println("Experimento 2: Determinar estrategia de generación de solucion inicial");
         for(int i = 1; i <= 3; i++){
-            System.out.print("Generador " +i +"  ");
+            System.out.print("\n Generador " +i +"  ");
             experimentoHC(i, numPaquetes, numProporcion, 1);
         }
     }
@@ -128,7 +145,7 @@ public class Experiment {
         double proporcion = 1.2;
         DecimalFormat df = new DecimalFormat("#.##");
         for(int i = 1; i < iterProp; i++){
-            System.out.print("Proporcion: " +df.format(proporcion) +"  ");
+            System.out.print("\n Proporcion: " +df.format(proporcion) +"  ");
             experimentoHC(1, numPaquetes, proporcion, 1);
             proporcion += 0.2;
         }
@@ -138,7 +155,7 @@ public class Experiment {
         System.out.println("Experimento 4.b: Hallar la tendencia al incrementar el numero de paquetes");
         int paq = 100;
         for(int i = 1; i < iterPaq; i++){
-            System.out.print("Paquetes: " +paq  +"  ");
+            System.out.print("\n Paquetes: " +paq  +"  ");
             experimentoHC(1, paq, numProporcion, 1);
             paq += 50;
         }
@@ -210,10 +227,16 @@ public class Experiment {
     private static void hillClimbingStrategy(int inicial, int nPaq, double prop, int heuristic){
         AzamonState azamonState = selectgenerator(inicial, nPaq, prop);
         azamonState.setSelectedHeuristic(heuristic);
-        if(operadoresExtendido) azamonState.setOperadoresExtendido(true);
-        else azamonState.setOperadoresExtendido(false);
+        if(operadoresExtendido) {
+            azamonState.setOperadoresExtendido(true);
+        } else azamonState.setOperadoresExtendido(false);
         try{
-            HeuristicFunction h = (heuristic == 1)? new AzamonHeuristic(): new AzamonHeuristicHappiness();
+            HeuristicFunction h;
+            if(heuristic == 1) h = new AzamonHeuristic();
+            else {
+                azamonState.setA(coefA);
+                h = new AzamonHeuristicHappiness();
+            }
             Problem problem = new Problem(azamonState, new AzamonSuccessorFunctionHC(), new AzamonGoalTest(), h);
             HillClimbingSearch hillClimbingSearch = new HillClimbingSearch();
             calculateHC(problem, hillClimbingSearch);
@@ -225,10 +248,16 @@ public class Experiment {
     private static void simulatedAnnealingStrategy(int inicial, int nPaq, double prop, int heuristic, int maxIt, double lamb, int stiter, int k){
         AzamonState azamonState = selectgenerator(inicial, nPaq, prop);
         azamonState.setSelectedHeuristic(heuristic);
-        if(operadoresExtendido) azamonState.setOperadoresExtendido(true);
-        else azamonState.setOperadoresExtendido(false);
+        if(operadoresExtendido) {
+            azamonState.setOperadoresExtendido(true);
+        } else azamonState.setOperadoresExtendido(false);
         try{
-            HeuristicFunction h = (heuristic == 1)? new AzamonHeuristic(): new AzamonHeuristicHappiness();
+            HeuristicFunction h;
+            if(heuristic == 1) h = new AzamonHeuristic();
+            else {
+                azamonState.setA(coefA);
+                h = new AzamonHeuristicHappiness();
+            }
             Problem problem = new Problem(azamonState, new AzamonSuccessorFunctionSA(), new AzamonGoalTest(), h);
             SimulatedAnnealingSearch simulatedAnnealingSearch = new SimulatedAnnealingSearch(maxIt, stiter, k, lamb);
             calculateSA(problem, simulatedAnnealingSearch);
@@ -305,7 +334,7 @@ public class Experiment {
                 }
             }
             System.out.println("Prarametros minimos encontrados:");
-            System.out.println("Steps: " + minP1 + ", stiter: " + minP2 + ", k: " + minK + ", lamda: " + minLamda);
+            System.out.println("Steps: " + minP1 + ", stiter: " + minP2 + ", k: " + minK + ", lamda: " + minLamda +", coste min: " +minCoste);
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
