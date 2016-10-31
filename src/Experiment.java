@@ -18,6 +18,7 @@ public class Experiment {
 
     private static int numPaquetes = 100;
     private static double numProporcion = 1.2;
+
     private static int numMaxIt = 1705621;
     private static double numLambda = 0.00001;
     private static int numStiter = 100;
@@ -266,7 +267,6 @@ public class Experiment {
         long end = System.currentTimeMillis();
         sumaTime += (end - start);
         sumaPasos += s.getNodesExpanded();
-        sumaCosteFinal += ((AzamonState)s.getGoalState()).coste();
         sumaCosteFinal += ((AzamonState)s.getGoalState()).heuristicValue();
         if(extendido) {
             sumaCosteAlmFinal += ((AzamonState)s.getGoalState()).coste();
