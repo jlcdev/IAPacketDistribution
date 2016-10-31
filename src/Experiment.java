@@ -19,10 +19,10 @@ public class Experiment {
     private static int numPaquetes = 100;
     private static double numProporcion = 1.2;
     //TODO : tocar parametros SA
-    private static int numMaxIt = 10000000;
-    private static double numLambda = 0.00001;
-    private static int numStiter = 100;
-    private static int numK = 25;
+    private static int numMaxIt = 555503;
+    private static double numLambda = 0.0001;
+    private static int numStiter = 36;
+    private static int numK =  38;
 
     //TODO: muere por tiempo o sale error
     private static int numMaxVarRandom = 4;
@@ -268,7 +268,6 @@ public class Experiment {
         long end = System.currentTimeMillis();
         sumaTime += (end - start);
         sumaPasos += s.getNodesExpanded();
-        sumaCosteFinal += ((AzamonState)s.getGoalState()).coste();
         sumaCosteFinal += ((AzamonState)s.getGoalState()).heuristicValue();
         if(extendido) {
             sumaCosteAlmFinal += ((AzamonState)s.getGoalState()).coste();
