@@ -45,7 +45,7 @@ public class Experiment {
         System.out.println("\n----------------------------------------------------------------------\n");
         exp2();
         System.out.println("\n----------------------------------------------------------------------\n");
-        //exp3();
+        exp3();
         System.out.println("\n----------------------------------------------------------------------\n");
         exp4A();
         System.out.println("\n----------------------------------------------------------------------\n");
@@ -283,7 +283,7 @@ public class Experiment {
         int minK = 0;
         double minLamda = 0.0;
         double minCoste = 1000000;
-        double[] lambdaList = new double[]{0.1, 0.01, 0.001, 0.0001, 0.00001, 0.000001, 0.0000001};
+        double[] lambdaList = new double[]{0.0001, 0.00001, 0.000001, 0.0000001};
         Random random = new Random();
         AzamonState azamonState = new AzamonState();
         azamonState.generatorA(100, 1234, 1.2, 1234);
@@ -291,10 +291,9 @@ public class Experiment {
         Problem p = new Problem(azamonState, new AzamonSuccessorFunctionSA(), new AzamonGoalTest(), h);
         try{
             for(int i = 0; i < numMaxVarRandom; ++i){
-                //TODO: se podrian acotar los parametros ?
-                int p1 = random.nextInt(10000000);
-                int p2 = random.nextInt(1000);
-                int p3 = random.nextInt(100);
+                int p1 = random.nextInt(2000000);
+                int p2 = random.nextInt(500);
+                int p3 = random.nextInt(50);
                 double p4 = lambdaList[random.nextInt(lambdaList.length)];
                 SimulatedAnnealingSearch simulatedAnnealingSearch = new SimulatedAnnealingSearch(p1, p2, p3, p4);
                 SearchAgent searchAgent = new SearchAgent(p, simulatedAnnealingSearch);
