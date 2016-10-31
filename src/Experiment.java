@@ -11,7 +11,7 @@ import java.util.Random;
  * Created by albert campano on 27/10/2016.
  */
 public class Experiment {
-    private static int nrounds = 8;
+    private static int nrounds = 10;
     private static int iterProp = 10;
     private static int iterPaq = 6;
     private static boolean operadoresExtendido = false;
