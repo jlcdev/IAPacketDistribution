@@ -8,15 +8,13 @@ public class AzamonHeuristicHappiness implements HeuristicFunction{
 
     @Override
     public double getHeuristicValue(Object o) {
-        double a = 1.0,
-               b = 4.0;
         AzamonState azamonState = (AzamonState) o;
-        double response = a * azamonState.coste();
+        double response = azamonState.getA() * azamonState.coste();
         double precioDia = 0.25;
         int nPaq = azamonState.getPaqueteEnOferta().length, j;
         for(int i = 0; i < nPaq; ++i){
             j = azamonState.getPaqueteEnOferta()[i];
-            response -= (b * precioDia * azamonState.calcDiasFelicidad(i, j));
+            response -= (azamonState.getB() * precioDia * azamonState.calcDiasFelicidad(i, j));
         }
         return response;
     }

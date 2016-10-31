@@ -18,10 +18,13 @@ public class AzamonState {
     private Transporte transporte;
     private int selectedHeuristic;
     private boolean operadoresExtendido;
+    private double a, b;
 
     public AzamonState(){
         random = new Random();
-        operadoresExtendido = false;
+        this.operadoresExtendido = false;
+        this.a = 1.0;
+        this.b = 4.0;
     }
 
     public AzamonState(final AzamonState oldAzamonState){
@@ -31,6 +34,8 @@ public class AzamonState {
         this.pesoDisponibleOfertas = oldAzamonState.pesoDisponibleOfertas.clone();
         this.selectedHeuristic = oldAzamonState.selectedHeuristic;
         this.operadoresExtendido = oldAzamonState.operadoresExtendido;
+        this.a = oldAzamonState.a;
+        this.b = oldAzamonState.b;
     }
 
     // NEW GENERATOR FUNCTIONS
@@ -330,6 +335,22 @@ public class AzamonState {
 
     public static Random getRandom() {
         return random;
+    }
+
+    public double getA() {
+        return a;
+    }
+
+    public void setA(double a) {
+        this.a = a;
+    }
+
+    public double getB() {
+        return b;
+    }
+
+    public void setB(double b) {
+        this.b = b;
     }
 
     @Override
