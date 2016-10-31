@@ -19,34 +19,56 @@ public class AzamonSuccessorFunctionSA implements SuccessorFunction{
         int numPaq = parentState.numeroPaquetes(),
             numOf = parentState.numeroTransportes(),
             p, q, t, oi, oj;
-        int PT = numPaq * numOf;
-        int PP = numPaq * numPaq;
-        int TT = numOf * numOf;
-        int n = random.nextInt(PT + PP + TT);
-        if(n < PT){
-            do{
-                p = random.nextInt(numPaq);
-                t = random.nextInt(numOf);
-            }while(!parentState.canMove(p,t));
-            AzamonState newState = new AzamonState(parentState);
-            newState.movePacket(p, t);
-            retVal.add(new Successor("", newState));
-        }else if(n < (PT + PP)){
-            do{
-                p = random.nextInt(numPaq);
-                q = random.nextInt(numPaq);
-            }while(p == q && !parentState.canInterchangePackets(p,q));
-            AzamonState newState = new AzamonState(parentState);
-            newState.interchangePacket(p, q);
-            retVal.add(new Successor("", newState));
+        if(parentState.isOperadoresExtendido()){
+            int PT = numPaq * numOf;
+            int PP = numPaq * numPaq;
+            int TT = numOf * numOf;
+            int n = random.nextInt(PT + PP + TT);
+            if(n < PT){
+                do{
+                    p = random.nextInt(numPaq);
+                    t = random.nextInt(numOf);
+                }while(!parentState.canMove(p,t));
+                AzamonState newState = new AzamonState(parentState);
+                newState.movePacket(p, t);
+                retVal.add(new Successor("", newState));
+            }else if(n < (PT + PP)){
+                do{
+                    p = random.nextInt(numPaq);
+                    q = random.nextInt(numPaq);
+                }while(p == q && !parentState.canInterchangePackets(p,q));
+                AzamonState newState = new AzamonState(parentState);
+                newState.interchangePacket(p, q);
+                retVal.add(new Successor("", newState));
+            }else{
+                do{
+                    oi = random.nextInt(numOf);
+                    oj = random.nextInt(numOf);
+                }while(oi == oj && !parentState.canExchangeOffer(oi, oj));
+                AzamonState newState = new AzamonState(parentState);
+                newState.exchangeOffer(oi, oj);
+                retVal.add(new Successor("", newState));
+            }
         }else{
-            do{
-                oi = random.nextInt(numOf);
-                oj = random.nextInt(numOf);
-            }while(oi == oj && !parentState.canExchangeOffer(oi, oj));
-            AzamonState newState = new AzamonState(parentState);
-            newState.exchangeOffer(oi, oj);
-            retVal.add(new Successor("", newState));
+            int PT = numPaq * numOf;
+            int PP = numPaq * numPaq;
+            if(random.nextInt(PT + PP) < PT){
+                do{
+                    p = random.nextInt(numPaq);
+                    t = random.nextInt(numOf);
+                }while(!parentState.canMove(p,t));
+                AzamonState newState = new AzamonState(parentState);
+                newState.movePacket(p, t);
+                retVal.add(new Successor("", newState));
+            }else{
+                do{
+                    p = random.nextInt(numPaq);
+                    q = random.nextInt(numPaq);
+                }while(p == q && !parentState.canInterchangePackets(p,q));
+                AzamonState newState = new AzamonState(parentState);
+                newState.interchangePacket(p, q);
+                retVal.add(new Successor("", newState));
+            }
         }
         return retVal;
     }
