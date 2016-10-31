@@ -9,7 +9,7 @@ public class AzamonHeuristicHappiness implements HeuristicFunction{
     @Override
     public double getHeuristicValue(Object o) {
         double a = 1.0,
-               b = 1.0;
+               b = 4.0;
         AzamonState azamonState = (AzamonState) o;
         double response = a * azamonState.coste();
         double precioDia = 0.25;

@@ -87,7 +87,7 @@ public class AzamonState {
             generatorB(numPaq, seedPaquetes, proporcion, seedOfertas);
             return;
         }else{
-            System.out.println("Generation successfully");
+            //System.out.println("Generation successfully");
         }
     }
     //solo verificar el caso de que la prioridad sea superior
