@@ -23,8 +23,8 @@ public class AzamonState {
     public AzamonState(){
         random = new Random();
         this.operadoresExtendido = false;
-        this.a = 1.0;
-        this.b = 4.0;
+        this.a = 0.2;
+        this.b = 1 - this.a;
     }
 
     public AzamonState(final AzamonState oldAzamonState){
@@ -343,14 +343,11 @@ public class AzamonState {
 
     public void setA(double a) {
         this.a = a;
+        this.b = 1 - a;
     }
 
     public double getB() {
         return b;
-    }
-
-    public void setB(double b) {
-        this.b = b;
     }
 
     @Override
