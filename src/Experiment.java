@@ -80,7 +80,7 @@ public class Experiment {
         double proporcion = 1.2;
         for(int i = 1; i < iterProp; i++){
             System.out.print("\n Proporcion: " +df.format(proporcion) +"  ");
-            experimentoSA(1, numPaquetes, proporcion, 1, numMaxIt, numLambda, numStiter, numK);
+            experimentoSA(3, numPaquetes, proporcion, 1, numMaxIt, numLambda, numStiter, numK);
             proporcion += 0.2;
         }
 
@@ -89,7 +89,7 @@ public class Experiment {
         int paq = 100;
         for(int i = 1; i < iterPaq; i++){
             System.out.print("\n Paquetes: " +paq  +"  ");
-            experimentoSA(1, paq, numProporcion, 1, numMaxIt, numLambda, numStiter, numK);
+            experimentoSA(3, paq, numProporcion, 1, numMaxIt, numLambda, numStiter, numK);
             paq += 50;
         }
 
@@ -99,7 +99,7 @@ public class Experiment {
         for(int i = 1; i < 10; i++){
             coefA = i*0.1;
             System.out.println("\n a: " +coefA +"  b: " +(1-coefA));
-            experimentoSA(1, numPaquetes, numProporcion, 2, numMaxIt, numLambda, numStiter, numK);
+            experimentoSA(3, numPaquetes, numProporcion, 2, numMaxIt, numLambda, numStiter, numK);
         }
         extendido = false;
         System.out.println("\n----------------------------------------------------------------------\n");
@@ -112,7 +112,7 @@ public class Experiment {
         for(int i = 1; i < 10; i++){
             coefA = i*0.1;
             System.out.println("\n a: " +coefA +"  b: " +(1-coefA));
-            experimentoHC(1, numPaquetes, numProporcion, 2);
+            experimentoHC(3, numPaquetes, numProporcion, 2);
         }
         extendido = false;
     }
@@ -146,7 +146,7 @@ public class Experiment {
         DecimalFormat df = new DecimalFormat("#.##");
         for(int i = 1; i < iterProp; i++){
             System.out.print("\n Proporcion: " +df.format(proporcion) +"  ");
-            experimentoHC(1, numPaquetes, proporcion, 1);
+            experimentoHC(3, numPaquetes, proporcion, 1);
             proporcion += 0.2;
         }
     }
@@ -156,7 +156,7 @@ public class Experiment {
         int paq = 100;
         for(int i = 1; i < iterPaq; i++){
             System.out.print("\n Paquetes: " +paq  +"  ");
-            experimentoHC(1, paq, numProporcion, 1);
+            experimentoHC(3, paq, numProporcion, 1);
             paq += 50;
         }
     }
