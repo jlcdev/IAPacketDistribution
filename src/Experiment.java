@@ -11,16 +11,19 @@ import java.util.Random;
  * Created by albert campano on 27/10/2016.
  */
 public class Experiment {
-    private static int nrounds = 10;
-    private static int iterProp = 10;
-    private static int iterPaq = 5;
+    private static int nrounds = 8;
+    private static int iterProp = 8;
+    private static int iterPaq = 4;
 
     private static int numPaquetes = 100;
     private static double numProporcion = 1.2;
+    //TODO : tocar parametros SA
     private static int numMaxIt = 100000;
-    private static double numLambda = 0.00001;
-    private static int numStiter = 1000;
-    private static int numK = 10;
+    private static double numLambda = 0.000001;
+    private static int numStiter = 100;
+    private static int numK = 50;
+    //TODO: muere por tiempo o sale error
+    private static int numMaxVarRandom = 4;
 
     private static boolean extendido = false;
     private static double sumaCosteFelicidadIncial;
@@ -31,6 +34,7 @@ public class Experiment {
     private static double sumaCosteInicial;
     private static double sumaCosteFinal;
     private static long sumaTime;
+    private static long sumaTimeGeneration;
     private static int sumaPasos;
 
 
@@ -111,25 +115,7 @@ public class Experiment {
 
     private static void exp3() {
         System.out.println("Experimento 3: Determinar mejores parametros para Simulated Annealing");
-        int startIterMax = 1;
-        int endIterMax = 100000000;
-        int startItStep = 1;
-        int endItStep = 1000;
-        int startK = 1;
-        int endK = 50;
-        double startLamb = 0.0000000001;
-        double endLamb = 0.1;
-
-        //Ya nos podemos pegar un tiro con esto
-        for(int i = startIterMax; i < endIterMax; i++) {
-            for (int j = startItStep; j < endItStep; j++) {
-                for (int k = startK; k < endK; k++) {
-                    for (double l = startLamb; l < endLamb; l += startLamb){
-                        experimentoSA(3, numPaquetes, numProporcion, 1, i, l, j, k);
-                    }
-                }
-            }
-        }
+        randomSAParamsSearch();
     }
 
     private static void exp4A() {
@@ -160,8 +146,8 @@ public class Experiment {
             sumaCosteAlmInicial = 0.0;
             sumaCosteAlmFinal = 0.0;
         }
-
-        sumaCosteInicial = 00.;
+        sumaTimeGeneration = 0;
+        sumaCosteInicial = 0.0;
         sumaCosteFinal = 0.0;
         sumaTime = 0;
         sumaPasos = 0;
@@ -172,8 +158,10 @@ public class Experiment {
         double mediaCF = sumaCosteFinal/nrounds;
         long mediaT = sumaTime/nrounds;
         int mediaP = sumaPasos/nrounds;
+        long mediaTG = sumaTimeGeneration/nrounds;
         DecimalFormat df = new DecimalFormat("#.##");
-        System.out.println("C.Ini.: " +(df.format(mediaCI)) +" C.Fin.: " +(df.format(mediaCF)) +" Time: " +(mediaT) +" Pasos: " +(mediaP));
+        System.out.println("T.Generation: " +(mediaTG) +" ms    T.Alg.: " +(mediaT) +" ms    T.Total: " +(mediaT+mediaTG +" ms"));
+        System.out.println("C.Ini.: " +(df.format(mediaCI)) +" C.Fin.: " +(df.format(mediaCF)) +" Pasos: " +(mediaP));
         if(extendido) {
             double mediaCFI = sumaCosteFelicidadIncial/nrounds;
             double mediaCFF = sumaCosteFelicidadFinal/nrounds;
@@ -191,7 +179,7 @@ public class Experiment {
             sumaCosteAlmInicial = 0.0;
             sumaCosteAlmFinal = 0.0;
         }
-
+        sumaTimeGeneration = 0;
         sumaCosteInicial = 00.;
         sumaCosteFinal = 0.0;
         sumaTime = 0;
@@ -203,8 +191,10 @@ public class Experiment {
         double mediaCF = sumaCosteFinal/nrounds;
         long mediaT = sumaTime/nrounds;
         int mediaP = sumaPasos/nrounds;
+        long mediaTG = sumaTimeGeneration/nrounds;
         DecimalFormat df = new DecimalFormat("#.##");
-        System.out.println("C.Ini.: " +(df.format(mediaCI)) +" C.Fin.: " +(df.format(mediaCF)) +" Time: " +(mediaT) +" Pasos: " +(mediaP));
+        System.out.println("T.Generation: " +(mediaTG) +" ms    T.Alg.: " +(mediaT) +" ms    T.Total: " +(mediaT+mediaTG +" ms"));
+        System.out.println("C.Ini.: " +(df.format(mediaCI)) +" C.Fin.: " +(df.format(mediaCF)) +" Pasos: " +(mediaP));
         if(extendido) {
             double mediaCFI = sumaCosteFelicidadIncial/nrounds;
             double mediaCFF = sumaCosteFelicidadFinal/nrounds;
@@ -217,9 +207,12 @@ public class Experiment {
 
     private static AzamonState selectgenerator(int i, int nPaq, double prop) {
         AzamonState aS = new AzamonState();
+        long start = System.currentTimeMillis();
         if(i == 1) aS.generatorA(nPaq, 1234, prop, 1234);
         else if (i == 2) aS.generatorB(nPaq, 1234, prop, 1234);
         else if (i == 3) aS.generatorC(nPaq, 1234, prop, 1234);
+        long end = System.currentTimeMillis();
+        sumaTimeGeneration += (end-start);
         return aS;
     }
 
@@ -300,7 +293,8 @@ public class Experiment {
         AzamonHeuristic h = new AzamonHeuristic();
         Problem p = new Problem(azamonState, new AzamonSuccessorFunctionSA(), new AzamonGoalTest(), h);
         try{
-            for(int i = 0; i < 100000; ++i){
+            for(int i = 0; i < numMaxVarRandom; ++i){
+                //TODO: se podrian acotar los parametros ?
                 int p1 = random.nextInt(10000000);
                 int p2 = random.nextInt(1000);
                 int p3 = random.nextInt(100);
