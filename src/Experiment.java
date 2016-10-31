@@ -18,13 +18,11 @@ public class Experiment {
 
     private static int numPaquetes = 100;
     private static double numProporcion = 1.2;
-    //TODO : tocar parametros SA
-    private static int numMaxIt = 10000000;
+    private static int numMaxIt = 1705621;
     private static double numLambda = 0.00001;
     private static int numStiter = 100;
-    private static int numK = 25;
+    private static int numK = 6;
 
-    //TODO: muere por tiempo o sale error
     private static int numMaxVarRandom = 4;
 
     private static boolean extendido = false;
@@ -282,7 +280,7 @@ public class Experiment {
         int minP2 = 0;
         int minK = 0;
         double minLamda = 0.0;
-        double minCoste = 1000000;
+        double minCoste = 1000;
         double[] lambdaList = new double[]{0.0001, 0.00001, 0.000001, 0.0000001};
         Random random = new Random();
         AzamonState azamonState = new AzamonState();
