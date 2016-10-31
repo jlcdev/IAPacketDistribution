@@ -40,18 +40,20 @@ public class AzamonSuccessorFunctionHC implements SuccessorFunction{
                 }
             }
         }
-/*
+
         //EXCHANGE CONTAINER OPERATOR
-        for(int i = numTrans; i >= 0; --i){
-            for(int j = i-1; j >= 0; --j){
-                if(parentState.canExchangeOffer(i, j)){
-                    AzamonState newState = new AzamonState(parentState);
-                    newState.exchangeOffer(i, j);
-                    retVal.add(new Successor("EXCHANGE(offer: " + i + ", offer: " + j + ", cost: " + heuristic.getHeuristicValue(newState) + ")", newState));
+        if(parentState.isOperadoresExtendido()){
+            for (int i = numTrans; i >= 0; --i) {
+                for (int j = i - 1; j >= 0; --j) {
+                    if (parentState.canExchangeOffer(i, j)) {
+                        AzamonState newState = new AzamonState(parentState);
+                        newState.exchangeOffer(i, j);
+                        retVal.add(new Successor("EXCHANGE(offer: " + i + ", offer: " + j + ", cost: " + heuristic.getHeuristicValue(newState) + ")", newState));
+                    }
                 }
             }
         }
-        */
+
         return retVal;
 
     }

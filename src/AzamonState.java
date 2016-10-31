@@ -17,9 +17,11 @@ public class AzamonState {
     private Paquetes paquetes;
     private Transporte transporte;
     private int selectedHeuristic;
+    private boolean operadoresExtendido;
 
     public AzamonState(){
         random = new Random();
+        operadoresExtendido = false;
     }
 
     public AzamonState(final AzamonState oldAzamonState){
@@ -28,6 +30,7 @@ public class AzamonState {
         this.paqueteEnOferta = oldAzamonState.paqueteEnOferta.clone();
         this.pesoDisponibleOfertas = oldAzamonState.pesoDisponibleOfertas.clone();
         this.selectedHeuristic = oldAzamonState.selectedHeuristic;
+        this.operadoresExtendido = oldAzamonState.operadoresExtendido;
     }
 
     // NEW GENERATOR FUNCTIONS
@@ -214,7 +217,6 @@ public class AzamonState {
         return condi && condj && condp;
     }
 
-    /*
     public boolean canExchangeOffer(int i, int j){
         if(i == j) return false;
         Oferta oi = this.transporte.get(i);
@@ -227,7 +229,6 @@ public class AzamonState {
         if(pesoOiOcupado <= pesoOj && pesoOjOcupado <= pesoOi) return true;
         return false;
     }
-    */
 
 
     //Operaciones
@@ -256,7 +257,6 @@ public class AzamonState {
         pesoDisponibleOfertas[ofertaj] -= (pesoi - pesoj);
     }
 
-    /*
     public void exchangeOffer(int oi, int oj){
         List<Integer> listOi = new ArrayList<>();
         List<Integer> listOj = new ArrayList<>();
@@ -271,7 +271,7 @@ public class AzamonState {
             movePacket(p, oi);
         }
     }
-    */
+
 
     //Si estricto = true solo permitimos prio == envio, sino permitimos prio <= envio
     private boolean ponerPaquete(int pi, int oj, boolean estricto){
@@ -305,6 +305,7 @@ public class AzamonState {
     public void setSelectedHeuristic(int selectedHeuristic) {
         this.selectedHeuristic = selectedHeuristic;
     }
+    public void setOperadoresExtendido(boolean operadoresExtendido) { this.operadoresExtendido = operadoresExtendido; }
 
     //Funciones getters
 
@@ -321,6 +322,7 @@ public class AzamonState {
     public Transporte getTransporte() {
         return transporte;
     }
+    public boolean isOperadoresExtendido() { return operadoresExtendido; }
 
     public int getSelectedHeuristic() {
         return selectedHeuristic;

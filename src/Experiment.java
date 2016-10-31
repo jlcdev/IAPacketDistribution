@@ -14,14 +14,16 @@ public class Experiment {
     private static int nrounds = 8;
     private static int iterProp = 8;
     private static int iterPaq = 4;
+    private static boolean operadoresExtendido = false;
 
     private static int numPaquetes = 100;
     private static double numProporcion = 1.2;
     //TODO : tocar parametros SA
-    private static int numMaxIt = 100000;
-    private static double numLambda = 0.000001;
+    private static int numMaxIt = 10000000;
+    private static double numLambda = 0.00001;
     private static int numStiter = 100;
-    private static int numK = 50;
+    private static int numK = 25;
+
     //TODO: muere por tiempo o sale error
     private static int numMaxVarRandom = 4;
 
@@ -101,7 +103,11 @@ public class Experiment {
 
     private static void exp1(){
         System.out.println("Experimento 1: Determinar conjunto de operadores");
-        //Solo un tipo de operadores:
+        System.out.println("Operadores: mover + intercambiar Paquetes + intercambiar Ofertas");
+        operadoresExtendido = true;
+        experimentoHC(1, numPaquetes, numProporcion, 1);
+        operadoresExtendido = false;
+        System.out.println("Operadores: mover + intercambiar Paquetes");
         experimentoHC(1, numPaquetes, numProporcion, 1);
     }
 
@@ -139,18 +145,14 @@ public class Experiment {
         }
     }
 
+    private static void init() {
+        if(extendido) sumaCosteFelicidadIncial = sumaCosteFelicidadFinal = sumaCosteAlmInicial = sumaCosteAlmFinal = 0.0;
+        sumaCosteInicial = sumaCosteFinal = 0.0;
+        sumaTimeGeneration = sumaTime =  sumaPasos = 0;
+    }
+
     private static void experimentoHC(int inicial, int nPaq, double prop, int heuristic) {
-        if(extendido) {
-            sumaCosteFelicidadIncial = 0.0;
-            sumaCosteFelicidadFinal = 0.0;
-            sumaCosteAlmInicial = 0.0;
-            sumaCosteAlmFinal = 0.0;
-        }
-        sumaTimeGeneration = 0;
-        sumaCosteInicial = 0.0;
-        sumaCosteFinal = 0.0;
-        sumaTime = 0;
-        sumaPasos = 0;
+        init();
         for(int i = 0; i < nrounds; i++) {
             hillClimbingStrategy(inicial, nPaq, prop, heuristic);
         }
@@ -173,17 +175,7 @@ public class Experiment {
     }
 
     private static void experimentoSA(int inicial, int nPaq, double prop, int heuristic, int maxIt, double lamb, int stiter, int k) {
-        if(extendido) {
-            sumaCosteFelicidadIncial = 0.0;
-            sumaCosteFelicidadFinal = 0.0;
-            sumaCosteAlmInicial = 0.0;
-            sumaCosteAlmFinal = 0.0;
-        }
-        sumaTimeGeneration = 0;
-        sumaCosteInicial = 00.;
-        sumaCosteFinal = 0.0;
-        sumaTime = 0;
-        sumaPasos = 0;
+        init();
         for(int i = 0; i < nrounds; i++) {
             simulatedAnnealingStrategy(inicial, nPaq, prop, heuristic, maxIt, lamb, stiter, k);
         }
@@ -219,6 +211,8 @@ public class Experiment {
     private static void hillClimbingStrategy(int inicial, int nPaq, double prop, int heuristic){
         AzamonState azamonState = selectgenerator(inicial, nPaq, prop);
         azamonState.setSelectedHeuristic(heuristic);
+        if(operadoresExtendido) azamonState.setOperadoresExtendido(true);
+        else azamonState.setOperadoresExtendido(false);
         try{
             HeuristicFunction h = (heuristic == 1)? new AzamonHeuristic(): new AzamonHeuristicHappiness();
             Problem problem = new Problem(azamonState, new AzamonSuccessorFunctionHC(), new AzamonGoalTest(), h);
@@ -232,6 +226,8 @@ public class Experiment {
     private static void simulatedAnnealingStrategy(int inicial, int nPaq, double prop, int heuristic, int maxIt, double lamb, int stiter, int k){
         AzamonState azamonState = selectgenerator(inicial, nPaq, prop);
         azamonState.setSelectedHeuristic(heuristic);
+        if(operadoresExtendido) azamonState.setOperadoresExtendido(true);
+        else azamonState.setOperadoresExtendido(false);
         try{
             HeuristicFunction h = (heuristic == 1)? new AzamonHeuristic(): new AzamonHeuristicHappiness();
             Problem problem = new Problem(azamonState, new AzamonSuccessorFunctionSA(), new AzamonGoalTest(), h);
@@ -241,6 +237,7 @@ public class Experiment {
             System.out.println(e.getMessage());
         }
     }
+
 
     private static void calculateHC(Problem problem, HillClimbingSearch hillClimbingSearch) throws Exception {
         sumaCosteInicial += ((AzamonState)problem.getInitialState()).heuristicValue();
