@@ -36,7 +36,7 @@ public class AzamonSuccessorFunctionSA implements SuccessorFunction{
                 do{
                     p = random.nextInt(numPaq);
                     q = random.nextInt(numPaq);
-                }while(p == q && !parentState.canInterchangePackets(p,q));
+                }while(p == q || !parentState.canInterchangePackets(p,q));
                 AzamonState newState = new AzamonState(parentState);
                 newState.interchangePacket(p, q);
                 retVal.add(new Successor("", newState));
@@ -44,7 +44,7 @@ public class AzamonSuccessorFunctionSA implements SuccessorFunction{
                 do{
                     oi = random.nextInt(numOf);
                     oj = random.nextInt(numOf);
-                }while(oi == oj && !parentState.canExchangeOffer(oi, oj));
+                }while(oi == oj || !parentState.canExchangeOffer(oi, oj));
                 AzamonState newState = new AzamonState(parentState);
                 newState.exchangeOffer(oi, oj);
                 retVal.add(new Successor("", newState));
@@ -64,7 +64,7 @@ public class AzamonSuccessorFunctionSA implements SuccessorFunction{
                 do{
                     p = random.nextInt(numPaq);
                     q = random.nextInt(numPaq);
-                }while(p == q && !parentState.canInterchangePackets(p,q));
+                }while(p == q || !parentState.canInterchangePackets(p,q));
                 AzamonState newState = new AzamonState(parentState);
                 newState.interchangePacket(p, q);
                 retVal.add(new Successor("", newState));
